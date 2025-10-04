@@ -50,7 +50,7 @@ spec:
           args: {{ toYaml . | nindent 12 }}
           {{- end }}
           env:
-            {{- if and $.Values.ingress.enabled (gt len ($.Values.ingress.hosts) 0) }}
+            {{- if and $.Values.ingress.enabled (gt (len $.Values.ingress.hosts) 0) }}
             - name: AUTH_URL
               value: {{ (index $.Values.ingress.hosts 0).host | printf "https://%s" }}
             {{- end }}
