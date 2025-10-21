@@ -1,0 +1,11 @@
+# This file is used to validate the Chart and sets some values for required fields. It is not used for deployment.
+# Example usage: `helm lint charts/sourcebot/ --values charts/sourcebot/values.lint.yaml`
+
+postgresql:
+  auth:
+    password: "lintPassword"
+
+redis:
+  auth:
+    password: "lintPassword"
+

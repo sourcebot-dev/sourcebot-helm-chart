@@ -32,7 +32,7 @@ jobs:
         run: helm dependency update charts/sourcebot/
 
       - name: Run helm lint
-        run: helm lint charts/sourcebot/
+        run: helm lint charts/sourcebot/ -f charts/sourcebot/values.lint.yaml
 
       - name: Validate helm-docs
         run: |
