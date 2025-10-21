@@ -29,14 +29,14 @@ jobs:
           sudo mv helm-docs /usr/local/bin/
 
       - name: Update dependencies
-        run: helm dependency update charts/
+        run: helm dependency update charts/sourcebot/
 
       - name: Run helm lint
-        run: helm lint charts/
+        run: helm lint charts/sourcebot/
 
       - name: Validate helm-docs
         run: |
-          helm-docs charts/
+          helm-docs charts/sourcebot/
           if [[ $(git diff --stat) != '' ]]; then
             echo 'Chart documentation is out of date. Please run helm-docs and commit the changes.'
             echo 'Git diff:'
