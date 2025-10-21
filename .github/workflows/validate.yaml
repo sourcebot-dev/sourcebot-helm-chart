@@ -44,3 +44,7 @@ jobs:
             exit 1
           fi
 
+      - name: Validate schema against values
+        run: |
+          helm template test charts/sourcebot/ -f charts/sourcebot/values.yaml
+
