@@ -6,6 +6,7 @@
   "properties": {
     "global": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "security": {
           "type": "object",
@@ -25,6 +26,7 @@
     },
     "sourcebot": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "replicaCount": {
           "type": "integer",
@@ -60,8 +62,23 @@
         "license": {
           "type": "object"
         },
-        "envSecrets": {
-          "type": "array"
+        "additionalEnvSecrets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "envName": {
+                "type": "string"
+              },
+              "secretName": {
+                "type": "string"
+              },
+              "secretKey": {
+                "type": "string"
+              }
+            }
+          }
         },
         "additionalEnv": {
           "type": "array"

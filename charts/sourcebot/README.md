@@ -47,6 +47,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | redis.image.repository | string | `"bitnamilegacy/valkey"` | Overwrite default repository of helm chart to point to non-paid bitnami images |
 | redis.port | int | `6379` | Redis port |
 | sourcebot.additionalEnv | list | `[]` | Set additional environment variables |
+| sourcebot.additionalEnvSecrets | list | `[]` | Set environment variables from Kubernetes secrets |
 | sourcebot.additionalLabels | object | `{}` | Add extra labels to all resources |
 | sourcebot.additionalPorts | list | `[]` | Configure additional ports to expose on the container and service |
 | sourcebot.affinity | object | `{}` | Set affinity rules for pod scheduling Defaults to soft anti-affinity if not set See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/ |
@@ -54,7 +55,6 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.command | list | `[]` | Override the default command of the container |
 | sourcebot.config | object | `{"$schema":"https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json","connections":{},"settings":{}}` | Configure Sourcebot-specific application settings |
 | sourcebot.containerSecurityContext | object | `{}` | Set the container-level security context |
-| sourcebot.envSecrets | list | `[]` | Set environment variables from Kubernetes secrets |
 | sourcebot.extraVolumeMounts | list | `[]` | Define volume mounts for the container See: https://kubernetes.io/docs/concepts/storage/volumes/ |
 | sourcebot.extraVolumes | list | `[]` | Define additional volumes See: https://kubernetes.io/docs/concepts/storage/volumes/ |
 | sourcebot.image.digest | string | `""` | Container image digest (used instead of tag if set) |

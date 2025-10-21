@@ -62,7 +62,7 @@ spec:
             {{- end }}
             {{- include "sourcebot.databaseEnv" . | nindent 12 }}
             {{- include "sourcebot.redisEnv" . | nindent 12 }}
-            {{- range $.Values.sourcebot.envSecrets }}
+            {{- range $.Values.sourcebot.additionalEnvSecrets }}
             - name: {{ .envName }}
               valueFrom:
                 secretKeyRef:

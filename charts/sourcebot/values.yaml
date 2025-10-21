@@ -45,7 +45,7 @@ sourcebot:
     existingSecretKey: key
 
   # -- Set environment variables from Kubernetes secrets
-  envSecrets: []
+  additionalEnvSecrets: []
   # - secretName: sourcebot-github-token
   #   secretKey: token
   #   envName: GITHUB_TOKEN
