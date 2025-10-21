@@ -1,0 +1,18 @@
+{{- if and $.Values.sourcebot.podDisruptionBudget.enabled (gt (int $.Values.sourcebot.replicaCount) 1) }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "sourcebot.fullname" $ }}
+  labels:
+    {{- include "sourcebot.labels" $ | nindent 4 }}
+spec:
+  {{- if $.Values.sourcebot.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ $.Values.sourcebot.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if $.Values.sourcebot.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ $.Values.sourcebot.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "sourcebot.selectorLabels" $ | nindent 6 }}
+{{- end }}

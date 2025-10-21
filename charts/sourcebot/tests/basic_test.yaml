@@ -1,0 +1,186 @@
+suite: test basic chart functionality
+templates:
+  - deployment.yaml
+  - service.yaml
+  - serviceaccount.yaml
+  - config.yaml
+  - pvc.yaml
+tests:
+  - it: should render with default values
+    values:
+      - ../values.lint.yaml
+    asserts:
+      # Test that deployment is created
+      - hasDocuments:
+          count: 1
+        template: deployment.yaml
+      - isKind:
+          of: Deployment
+        template: deployment.yaml
+
+      # Test that service is created
+      - hasDocuments:
+          count: 1
+        template: service.yaml
+      - isKind:
+          of: Service
+        template: service.yaml
+
+      # Test that serviceaccount is created
+      - hasDocuments:
+          count: 1
+        template: serviceaccount.yaml
+      - isKind:
+          of: ServiceAccount
+        template: serviceaccount.yaml
+
+      # Test that configmap is created
+      - hasDocuments:
+          count: 1
+        template: config.yaml
+      - isKind:
+          of: ConfigMap
+        template: config.yaml
+
+      # Test that PVC is created (persistence enabled by default)
+      - hasDocuments:
+          count: 1
+        template: pvc.yaml
+      - isKind:
+          of: PersistentVolumeClaim
+        template: pvc.yaml
+
+  - it: should set correct app labels
+    values:
+      - ../values.lint.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: sourcebot
+        template: deployment.yaml
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: RELEASE-NAME
+        template: deployment.yaml
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+        template: deployment.yaml
+
+  - it: should use correct image when tag is specified
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.image.tag: "v1.2.3"
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "ghcr.io/sourcebot-dev/sourcebot:v1.2.3$"
+        template: deployment.yaml
+
+  - it: should use digest when specified
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.image.digest: "sha256:abcdef123456"
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "ghcr.io/sourcebot-dev/sourcebot@sha256:abcdef123456$"
+        template: deployment.yaml
+
+  - it: should set replica count
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.replicaCount: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+        template: deployment.yaml
+
+  - it: should mount persistence volume when enabled
+    values:
+      - ../values.lint.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: sourcebot-data
+            persistentVolumeClaim:
+              claimName: RELEASE-NAME-sourcebot-data
+        template: deployment.yaml
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: sourcebot-data
+            mountPath: /data
+        template: deployment.yaml
+
+  - it: should not create PVC when persistence is disabled
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.persistence.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: pvc.yaml
+
+  - it: should not mount volume when persistence is disabled
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.persistence.enabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: sourcebot-data
+        template: deployment.yaml
+
+  - it: should use existingClaim when specified
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.persistence.existingClaim: "my-existing-pvc"
+    asserts:
+      # PVC should not be created
+      - hasDocuments:
+          count: 0
+        template: pvc.yaml
+      # But volume should reference the existing claim
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: sourcebot-data
+            persistentVolumeClaim:
+              claimName: my-existing-pvc
+        template: deployment.yaml
+
+  - it: should set service type correctly
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.service.type: "LoadBalancer"
+    asserts:
+      - equal:
+          path: spec.type
+          value: LoadBalancer
+        template: service.yaml
+
+  - it: should include config in configmap
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.config:
+        $schema: "https://example.com/schema.json"
+        connections:
+          test:
+            type: github
+    asserts:
+      - isNotEmpty:
+          path: data["config.json"]
+        template: config.yaml
+

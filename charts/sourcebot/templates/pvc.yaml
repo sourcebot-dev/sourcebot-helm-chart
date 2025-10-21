@@ -1,0 +1,29 @@
+{{- if and .Values.sourcebot.persistence.enabled (not .Values.sourcebot.persistence.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "sourcebot.fullname" . }}-data
+  labels:
+    {{- include "sourcebot.labels" . | nindent 4 }}
+  {{- with .Values.sourcebot.persistence.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    {{- range .Values.sourcebot.persistence.accessModes }}
+    - {{ . }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.sourcebot.persistence.size }}
+  {{- if .Values.sourcebot.persistence.storageClass }}
+  {{- if (eq "-" .Values.sourcebot.persistence.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.sourcebot.persistence.storageClass }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+

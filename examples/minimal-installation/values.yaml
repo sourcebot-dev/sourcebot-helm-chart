@@ -1,0 +1,33 @@
+# Minimal Sourcebot Installation Example
+# This configuration uses a single secret for all credentials and deploys PostgreSQL and Redis as subcharts.
+
+# Sourcebot application configuration
+sourcebot:
+  image:
+    tag: "main"
+
+  # Sourcebot application configuration
+  config:
+    $schema: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json
+    connections:
+      # Example: GitHub repositories
+      github-repos:
+        type: github
+        repos:
+          - sourcebot-dev/sourcebot
+
+# PostgreSQL configuration
+postgresql:
+  auth:
+    # Reference the existing secret created separately
+    existingSecret: sourcebot
+    secretKeys:
+      userPasswordKey: postgresql-password
+      adminPasswordKey: postgresql-password
+
+# Redis configuration
+redis:
+  auth:
+    # Reference the existing secret created separately
+    existingSecret: sourcebot
+    existingSecretPasswordKey: redis-password
