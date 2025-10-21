@@ -34,6 +34,10 @@ jobs:
       - name: Run helm lint
         run: helm lint charts/sourcebot/ -f charts/sourcebot/values.lint.yaml
 
+      - name: Validate schema against values
+        run: |
+          helm template test charts/sourcebot/ -f charts/sourcebot/values.yaml -f charts/sourcebot/values.lint.yaml
+
       - name: Validate helm-docs
         run: |
           helm-docs charts/sourcebot/
@@ -43,8 +47,3 @@ jobs:
             git diff
             exit 1
           fi
-
-      - name: Validate schema against values
-        run: |
-          helm template test charts/sourcebot/ -f charts/sourcebot/values.yaml
-
