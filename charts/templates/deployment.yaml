@@ -6,104 +6,94 @@ metadata:
   labels:
     {{- include "sourcebot.labels" $ | nindent 4 }}
 spec:
-  replicas: {{ $.Values.replicaCount }}
+  replicas: {{ $.Values.sourcebot.replicaCount }}
   selector:
     matchLabels:
       {{- include "sourcebot.selectorLabels" $ | nindent 6 }}
   template:
     metadata:
-      {{- with $.Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "sourcebot.labels" $ | nindent 8 }}
-        {{- with $.Values.podLabels }}
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- with $.Values.sourcebot.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      labels:
+        {{- include "sourcebot.labels" $ | nindent 8 }}
     spec:
-      {{- with $.Values.imagePullSecrets }}
+      {{- with $.Values.sourcebot.image.pullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "sourcebot.serviceAccountName" $ }}
-      {{- with $.Values.podSecurityContext }}
+      {{- with $.Values.sourcebot.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with $.Values.initContainers }}
+      {{- with $.Values.sourcebot.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- with $.Values.containerSecurityContext }}
+          {{- with $.Values.sourcebot.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           image: {{ include "sourcebot.image" $ }}
-          imagePullPolicy: {{ $.Values.image.pullPolicy }}
-          {{- with $.Values.command }}
+          imagePullPolicy: {{ $.Values.sourcebot.image.pullPolicy }}
+          {{- with $.Values.sourcebot.command }}
           command: {{ toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $.Values.args }}
+          {{- with $.Values.sourcebot.args }}
           args: {{ toYaml . | nindent 12 }}
           {{- end }}
           env:
-            {{- if and $.Values.ingress.enabled (gt (len $.Values.ingress.hosts) 0) }}
+            {{- if and $.Values.sourcebot.ingress.enabled (gt (len $.Values.sourcebot.ingress.hosts) 0) }}
             - name: AUTH_URL
-              value: {{ (index $.Values.ingress.hosts 0).host | printf "https://%s" }}
+              value: {{ (index $.Values.sourcebot.ingress.hosts 0).host | printf "https://%s" }}
             {{- end }}
             - name: CONFIG_PATH
               value: /etc/sourcebot/config.json
-            {{- if $.Values.license }}
+            {{- if or $.Values.sourcebot.license.value $.Values.sourcebot.license.existingSecret }}
             - name: SOURCEBOT_EE_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.license.secretName }}
-                  key: {{ $.Values.license.secretKey }}
+              {{- with (include "sourcebot.getValueOrSecret" (dict "value" $.Values.sourcebot.license)) }}
+              {{- . | nindent 14 }}
+              {{- end }}
             {{- end }}
-            {{- if $.Values.database }}
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.database.secretName }}
-                  key: {{ $.Values.database.secretKey }}
-            {{- end }}
-            {{- if $.Values.redis }}
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.redis.secretName }}
-                  key: {{ $.Values.redis.secretKey }}
-            {{- end }}
-            {{- range $.Values.envSecrets }}
+            {{- include "sourcebot.databaseEnv" . | nindent 12 }}
+            {{- include "sourcebot.redisEnv" . | nindent 12 }}
+            {{- range $.Values.sourcebot.envSecrets }}
             - name: {{ .envName }}
               valueFrom:
                 secretKeyRef:
                   name: {{ .secretName }}
                   key: {{ .secretKey }}
             {{- end }}
-            {{- with $.Values.envs }}
+            {{- with $.Values.sourcebot.additionalEnv }}
             {{- toYaml . | nindent  12 }}
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ $.Values.service.containerPort }}
+              containerPort: {{ $.Values.sourcebot.service.containerPort }}
               protocol: TCP
-          {{- with $.Values.livenessProbe }}
+            {{- range $.Values.sourcebot.additionalPorts }}
+            - name: {{ .name }}
+              containerPort: {{ .containerPort }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
+          {{- with $.Values.sourcebot.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $.Values.readinessProbe }}
+          {{- with $.Values.sourcebot.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $.Values.startupProbe }}
+          {{- with $.Values.sourcebot.startupProbe }}
           startupProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $.Values.resources }}
+          {{- with $.Values.sourcebot.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -112,10 +102,14 @@ spec:
               mountPath: /etc/sourcebot/config.json
               subPath: config.json
               readOnly: true
-          {{- with $.Values.volumeMounts }}
+            {{- if .Values.sourcebot.persistence.enabled }}
+            - name: sourcebot-data
+              mountPath: /data
+            {{- end }}
+          {{- with $.Values.sourcebot.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with $.Values.priorityClassName }}
+      {{- with $.Values.sourcebot.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
       volumes:
@@ -125,18 +119,23 @@ spec:
             items:
               - key: config.json
                 path: config.json
-      {{- with $.Values.volumes }}
+        {{- if .Values.sourcebot.persistence.enabled }}
+        - name: sourcebot-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.sourcebot.persistence.existingClaim | default (printf "%s-data" (include "sourcebot.fullname" .)) }}
+        {{- end }}
+      {{- with $.Values.sourcebot.extraVolumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with $.Values.nodeSelector }}
+      {{- with $.Values.sourcebot.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with $.Values.affinity }}
+      {{- with $.Values.sourcebot.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with $.Values.tolerations }}
+      {{- with $.Values.sourcebot.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

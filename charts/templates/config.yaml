@@ -7,4 +7,4 @@ metadata:
     {{- include "sourcebot.labels" $ | nindent 4 }}
 data:
   config.json:  |
-    {{- toJson $.Values.config | nindent 4 }}
+    {{- toJson $.Values.sourcebot.config | nindent 4 }}

@@ -1,260 +1,338 @@
-# -- Sourcebot Helm Chart Values
+# Sourcebot Helm Chart Values
 
-# -- Override the name of the chart.
+global:
+  security:
+    # -- Allow insecure images to use bitnami legacy repository. Can be set to false if secure images are being used (Paid).
+    allowInsecureImages: true
+
+# -- Override the name for the selector labels, defaults to the chart name
 nameOverride: ""
 
-# -- Override the full name of the chart.
+# -- Override the full name of the deployed resources, defaults to a combination of the release name and the name for the selector labels
 fullnameOverride: ""
 
-# -- Set the number of replicas for the deployment.
-replicaCount: 1
+# Core Sourcebot Configuration
+sourcebot:
+  # -- Set the number of replicas for the deployment
+  replicaCount: 1
 
-# -- Configure the container image.
-image:
-  # -- Container image repository.
-  repository: ghcr.io/sourcebot-dev/sourcebot
-  # -- Container image tag.
-  # tag: ""
-  # -- Container image digest (used instead of tag if set).
-  # digest: ""
-  # -- Image pull policy.
-  pullPolicy: IfNotPresent
+  # Image configuration
+  image:
+    # -- Container image repository
+    repository: ghcr.io/sourcebot-dev/sourcebot
+    # -- Container image tag. Falls back to appVersion if not set.
+    tag: ""
+    # -- Container image digest (used instead of tag if set)
+    digest: ""
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+    # -- Configure image pull secrets for private registries
+    pullSecrets: []
 
-# -- Configure image pull secrets for private registries.
-imagePullSecrets: []
+  # -- Override the default command of the container
+  command: []
 
-# -- Override the default command of the container.
-command: []
+  # -- Override the default arguments of the container
+  args: []
 
-# -- Override the default arguments of the container.
-args: []
+  # License configuration
+  license:
+    # -- License key value (or use existingSecret)
+    value: ""
+    # -- Use an existing secret for the license key
+    existingSecret: ""
+    # -- Key in the existing secret that contains the license key
+    existingSecretKey: key
 
-# -- Configure the database secret by providing database.secretName and database.secretKey to use a Kubernetes secret.
-database: {}
-# secretName: sourcebot-database-url
-# secretKey: url
+  # -- Set environment variables from Kubernetes secrets
+  envSecrets: []
+  # - secretName: sourcebot-github-token
+  #   secretKey: token
+  #   envName: GITHUB_TOKEN
 
-# -- Configure the Redis secret by providing redis.secretName and redis.secretKey to use a Kubernetes secret.
-redis: {}
-# secretName: sourcebot-redis-url
-# secretKey: url
+  # -- Set additional environment variables
+  additionalEnv: []
+  # - name: SOURCEBOT_TELEMETRY_DISABLED
+  #   value: "1"
 
-# -- Configure the enterprise license key secret by providing license.secretName and license.secretKey to use a Kubernetes secret.
-license: {}
-# secretName: sourcebot-ee-license-key
-# secretKey: key
+  # -- Configure Sourcebot-specific application settings
+  config:
+    # Schema version of the Sourcebot configuration
+    $schema: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json
+    connections: {}
+    # github-repos:
+    #   type: github
+    #   token:
+    #     env: GITHUB_TOKEN
+    #   repos:
+    #     - sourcebot/sourcebot
+    settings: {}
+    # reindexIntervalMs: 86400000
+    # enablePublicAccess: true
 
-# -- Set environment variables from Kubernetes secrets.
-envSecrets: []
-# - secretName: sourcebot-github-token
-#   secretKey: token
-#   envName: GITHUB_TOKEN
+  # ServiceAccount configuration
+  serviceAccount:
+    # -- Create a new ServiceAccount
+    create: true
+    # -- Use an existing ServiceAccount (if set)
+    name: ""
+    # -- Add annotations to the ServiceAccount
+    annotations: {}
+    # -- Enable or disable automatic ServiceAccount mounting
+    automount: false
 
-# -- Set additional environment variables.
-envs: []
-# # Disable sourcebot telemetry.
-# - name: SOURCEBOT_TELEMETRY_DISABLED
-#   value: "1"
+  # -- Set the pod-level security context
+  podSecurityContext: {}
+  # runAsUser: 1000
+  # runAsGroup: 1000
+  # runAsNonRoot: true
+  # fsGroup: 1000
 
-# -- Configure Sourcebot-specific application settings.
-config:
-  # Schema version of the Sourcebot configuration.
-  $schema: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json
-  connections: {}
-  # github-repos:
-  #   type: github
-  #   token:
-  #     env: GITHUB_TOKEN
-  #   repos:
-  #     - sourcebot/sourcebot
-  #     - sourcebot/sourcebot-plugins
-  settings: {}
-  # reindexIntervalMs: 86400000
-  # enablePublicAccess: true
+  # -- Set the container-level security context
+  containerSecurityContext: {}
+  # allowPrivilegeEscalation: false
+  # privileged: false
+  # readOnlyRootFilesystem: true
+  # runAsUser: 1000
+  # runAsGroup: 1000
+  # capabilities:
+  #   drop:
+  #     - ALL
+  # seccompProfile:
+  #   type: RuntimeDefault
 
-# -- Configure the ServiceAccount.
-serviceAccount:
-  # -- Create a new ServiceAccount.
-  create: true
-  # -- Use an existing ServiceAccount (if set).
-  name: ""
-  # -- Add annotations to the ServiceAccount.
-  annotations: {}
-  # -- Enable or disable automatic ServiceAccount mounting.
-  automount: false
+  # Service configuration
+  service:
+    # -- Type of the Kubernetes service (e.g., ClusterIP, NodePort, LoadBalancer)
+    type: ClusterIP
+    # -- Internal container port
+    containerPort: 3000
+    # -- External service port
+    port: 3000
+    # -- Service annotations
+    annotations: {}
 
-# -- Set the pod-level security context.
-podSecurityContext: {}
-# runAsUser: 1000
-# runAsGroup: 1000
-# runAsNonRoot: true
-# fsGroup: 1000
+  # -- Configure additional ports to expose on the container and service
+  additionalPorts: []
+  # - name: metrics
+  #   port: 9090
+  #   containerPort: 9090
+  #   protocol: TCP
 
-# -- Set the container-level security context.
-containerSecurityContext: {}
-# allowPrivilegeEscalation: false
-# privileged: false
-# readOnlyRootFilesystem: true
-# runAsUser: 1000
-# runAsGroup: 1000
-# capabilities:
-#   drop:
-#     - ALL
-# seccompProfile:
-#   type: RuntimeDefault
+  # Ingress configuration
+  ingress:
+    # -- Enable or disable ingress
+    enabled: false
+    # -- Ingress class name
+    className: ""
+    # -- Ingress annotations
+    annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # -- List of hostnames and paths for ingress rules. The first host will be used as the default host.
+    hosts: []
+    # - host: chart-example.local
+    #   paths:
+    #     - path: /
+    #       pathType: ImplementationSpecific
+    # -- TLS settings for ingress
+    tls: []
+    # - hosts:
+    #     - chart-example.local
+    #   secretName: chart-example-tls
 
-# -- Configure the Sourcebot Kubernetes service.
-service:
-  # -- Type of the Kubernetes service (e.g., ClusterIP, NodePort, LoadBalancer).
-  type: ClusterIP
-  # -- Internal container port.
-  containerPort: 3000
-  # -- External service port.
-  port: 3000
-  # -- Service annotations.
-  annotations: {}
+  # -- Configure init containers to run before the main container
+  initContainers: []
+  # - name: sleeper
+  #   image: busybox
+  #   args:
+  #     - sleep
+  #     - "10"
 
-# -- Configure ingress for Sourcebot.
-ingress:
-  # -- Enable or disable ingress.
-  enabled: false
-  # -- Ingress class name.
-  className: ""
-  # -- Ingress annotations.
-  annotations: {}
-  # kubernetes.io/ingress.class: nginx
-  # kubernetes.io/tls-acme: "true"
+  # -- Configure resource requests and limits for the container
+  resources: {}
+  ## It is recommended to set resources explicitly in production environments.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
-  # -- List of hostnames and paths for ingress rules. The first host will be used as the default host.
-  hosts: []
-  # - host: chart-example.local
-  #  paths:
-  #     - path: /
-  #       pathType: ImplementationSpecific
+  # Liveness probe to check if the container is alive
+  livenessProbe:
+    # -- Http GET request to check if the container is alive
+    httpGet:
+      # -- Path to check
+      path: /api/health
+      # -- Port to check
+      port: http
+    # -- Initial delay before the first probe
+    initialDelaySeconds: 20
+    # -- Frequency of the probe
+    periodSeconds: 10
+    # -- Number of consecutive failures before marking the container as unhealthy
+    failureThreshold: 5
 
-  # -- TLS settings for ingress.
-  tls: []
-  # - hosts:
-  #     - chart-example.local
-  #   secretName: chart-example-tls
+  # Readiness probe to check if the container is ready to serve traffic
+  readinessProbe:
+    # -- Http GET request to check if the container is ready
+    httpGet:
+      # -- Path to check
+      path: /api/health
+      # -- Port to check
+      port: http
+    # -- Initial delay before the first probe
+    initialDelaySeconds: 20
+    # -- Frequency of the probe
+    periodSeconds: 10
+    # -- Number of consecutive failures before marking the container as not ready
+    failureThreshold: 5
 
-# -- Configure init containers to run before the main container.
-initContainers: []
-# - name: sleeper
-#   image: busybox
-#   args:
-#     - sleep
-#     - "10"
+  # Startup probe to check if the container has started successfully
+  startupProbe:
+    # -- Http GET request to check if the container has started
+    httpGet:
+      # -- Path to check
+      path: /api/health
+      # -- Port to check
+      port: http
+    # -- Number of seconds to wait before starting the probe
+    failureThreshold: 30
+    # -- Initial delay before the first probe
+    periodSeconds: 30
 
-# -- Configure resource requests and limits for the container.
-resources: {}
-## It is recommended to set resources explicitly in production environments.
-# limits:
-#   cpu: 100m
-#   memory: 128Mi
-# requests:
-#   cpu: 100m
-#   memory: 128Mi
+  # -- Define additional volumes
+  # See: https://kubernetes.io/docs/concepts/storage/volumes/
+  extraVolumes: []
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
 
-# -- Liveness probe to check if the container is alive.
-livenessProbe:
-  # -- Http GET request to check if the container is alive.
-  httpGet:
-    # -- Path to check.
-    path: /
-    # -- Port to check.
-    port: http
-  # -- Initial delay before the first probe.
-  initialDelaySeconds: 10
-  # -- Frequency of the probe.
-  periodSeconds: 10
-  # -- Number of consecutive failures before marking the container as unhealthy.
-  failureThreshold: 5
+  # -- Define volume mounts for the container
+  # See: https://kubernetes.io/docs/concepts/storage/volumes/
+  extraVolumeMounts: []
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
 
-# -- Readiness probe to check if the container is ready to serve traffic.
-readinessProbe:
-  # -- Http GET request to check if the container is ready.
-  httpGet:
-    # -- Path to check.
-    path: /
-    # -- Port to check.
-    port: http
-  # -- Initial delay before the first probe.
-  initialDelaySeconds: 10
-  # -- Frequency of the probe.
-  periodSeconds: 10
-  # -- Number of consecutive failures before marking the container as not ready.
-  failureThreshold: 5
+  # Pod Disruption Budget configuration
+  podDisruptionBudget:
+    # -- Enable Pod Disruption Budget
+    enabled: true
+    # -- Minimum number of pods that must be available
+    minAvailable: 1
+    # -- Maximum number of pods that can be unavailable
+    maxUnavailable: 1
 
-# -- Startup probe to check if the container has started successfully.
-startupProbe:
-  # -- Http GET request to check if the container has started.
-  httpGet:
-    # -- Path to check.
-    path: /
-    # -- Port to check.
-    port: http
-  # -- Number of seconds to wait before starting the probe.
-  failureThreshold: 30
-  # -- Initial delay before the first probe.
-  periodSeconds: 30
+  # -- Add annotations to the pod metadata
+  podAnnotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/path: "/metrics"
+  # prometheus.io/port: "9102"
 
-# -- Define additional volumes.
-# See: https://kubernetes.io/docs/concepts/storage/volumes/
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+  # -- Add extra labels to all resources
+  additionalLabels: {}
+  # team: sourcebot
 
-# -- Define volume mounts for the container.
-# See: https://kubernetes.io/docs/concepts/storage/volumes/
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+  # -- Set node selector constraints
+  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  nodeSelector: {}
 
-# -- Configure Pod Disruption Budget.
-podDisruptionBudget:
-  # -- Enable Pod Disruption Budget.
-  enabled: true
-  # -- Minimum number of pods that must be available.
-  minAvailable: 1
-  # -- Maximum number of pods that can be unavailable.
-  maxUnavailable: 1
+  # -- Set tolerations for pod scheduling
+  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  tolerations: []
+  # - effect: NoSchedule
+  #   key: "key"
+  #   operator: Equal
+  #   value: "value"
 
-# -- Add annotations to the pod metadata.
-podAnnotations: {}
-# prometheus.io/scrape: "true"
-# prometheus.io/path: "/metrics"
-# prometheus.io/port: "9102"
+  # -- Set affinity rules for pod scheduling
+  # Defaults to soft anti-affinity if not set
+  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  affinity: {}
 
-# -- Add extra labels to all resources.
-additionalLabels: {}
-# team: sourcebot
+  # -- Set the priority class name for pods
+  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
+  priorityClassName: ""
 
-# -- Set node selector constraints.
-# See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
-nodeSelector: {}
+  # Persistent storage configuration
+  persistence:
+    # -- Enable persistent storage for repository data and search indexes
+    enabled: true
+    # -- Use an existing PersistentVolumeClaim (if set, other persistence settings are ignored)
+    existingClaim: ""
+    # -- Size of the persistent volume
+    size: 10Gi
+    # -- Storage class name. If not set, uses the cluster default storage class
+    storageClass: ""
+    # -- Access modes for the persistent volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Annotations for the PersistentVolumeClaim
+    annotations: {}
 
-# -- Set tolerations for pod scheduling.
-# See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
-tolerations: []
-# - effect: NoSchedule
-#   key: "key"
-#   operator: Equal
-#   value: "value"
-
-# -- Set affinity rules for pod scheduling.
-# Defaults to soft anti-affinity if not set.
-# See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
-affinity: {}
-
-# -- Set the priority class name for pods.
-# See: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
-priorityClassName: ""
-
-# -- Configure the Bitnami PostgreSQL sub-chart.
-# See: https://artifacthub.io/packages/helm/bitnami/postgresql
+# PostgreSQL Configuration
 postgresql:
-  enabled: false
+  # -- Deploy PostgreSQL subchart. Set to false to use an external PostgreSQL instance.
+  deploy: true
+
+  # -- PostgreSQL host (only used if deploy is false)
+  host: ""
+  # -- PostgreSQL port
+  port: 5432
+
+  image:
+    # -- Overwrite default repository of helm chart to point to non-paid bitnami images
+    repository: bitnamilegacy/postgresql
+
+  # Authentication configuration
+  auth:
+    # -- Username to connect to PostgreSQL
+    username: sourcebot
+    # -- Password for PostgreSQL user (only used if existingSecret is not set)
+    password: ""
+    # -- Use an existing secret for PostgreSQL password
+    existingSecret: ""
+    # -- Keys in the existing secret
+    secretKeys:
+      userPasswordKey: postgresql-password
+      adminPasswordKey: postgresql-password
+    # -- Database name
+    database: sourcebot
+    # -- Additional database connection arguments
+    args: ""
+
+  # Subchart specific settings (only applies when deploy is true)
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+# Redis Configuration
+redis:
+  # -- Deploy Redis/Valkey subchart. Set to false to use an external Redis instance.
+  deploy: true
+
+  # -- Redis host (only used if deploy is false)
+  host: ""
+  # -- Redis port
+  port: 6379
+
+  image:
+    # -- Overwrite default repository of helm chart to point to non-paid bitnami images
+    repository: bitnamilegacy/valkey
+
+  # Authentication configuration
+  auth:
+    # -- Username for Redis connection
+    username: "default"
+    # -- Password for Redis user (only used if existingSecret is not set)
+    password: ""
+    # -- Use an existing secret for Redis password
+    existingSecret: ""
+    # -- Key in the existing secret that contains the Redis password
+    existingSecretPasswordKey: redis-password
+    # -- Redis database number
+    database: 0

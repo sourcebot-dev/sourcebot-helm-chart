@@ -1,4 +1,4 @@
-{{- if $.Values.ingress.enabled -}}
+{{- if $.Values.sourcebot.ingress.enabled -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -6,17 +6,17 @@ metadata:
   name: {{ include "sourcebot.fullname" $ }}
   labels:
     {{- include "sourcebot.labels" $ | nindent 4 }}
-  {{- with $.Values.ingress.annotations }}
+  {{- with $.Values.sourcebot.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- with $.Values.ingress.className }}
+  {{- with $.Values.sourcebot.ingress.className }}
   ingressClassName: {{ . }}
   {{- end }}
-  {{- if $.Values.ingress.tls }}
+  {{- if $.Values.sourcebot.ingress.tls }}
   tls:
-    {{- range $.Values.ingress.tls }}
+    {{- range $.Values.sourcebot.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -25,7 +25,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range $.Values.ingress.hosts }}
+    {{- range $.Values.sourcebot.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -38,7 +38,7 @@ spec:
               service:
                 name: {{ include "sourcebot.fullname" $ }}
                 port:
-                  number: {{ $.Values.service.port }}
+                  number: {{ $.Values.sourcebot.service.port }}
           {{- end }}
     {{- end }}
 {{- end }}

@@ -6,11 +6,17 @@ metadata:
   labels:
     {{- include "sourcebot.labels" $ | nindent 4 }}
 spec:
-  type: {{ $.Values.service.type }}
+  type: {{ $.Values.sourcebot.service.type }}
   ports:
-    - port: {{ $.Values.service.port }}
+    - port: {{ $.Values.sourcebot.service.port }}
       targetPort: http
       protocol: TCP
       name: http
+    {{- range $.Values.sourcebot.additionalPorts }}
+    - port: {{ .port }}
+      targetPort: {{ .name }}
+      protocol: {{ .protocol | default "TCP" }}
+      name: {{ .name }}
+    {{- end }}
   selector:
     {{- include "sourcebot.selectorLabels" $ | nindent 4 }}
