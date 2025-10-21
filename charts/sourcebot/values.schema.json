@@ -6,6 +6,7 @@
   "properties": {
     "global": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "security": {
           "type": "object",
@@ -25,6 +26,7 @@
     },
     "sourcebot": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "replicaCount": {
           "type": "integer",
