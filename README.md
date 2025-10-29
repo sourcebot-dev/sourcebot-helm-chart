@@ -1,28 +1,10 @@
 # Sourcebot Helm Chart
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v4.7.3](https://img.shields.io/badge/AppVersion-v4.7.3-informational?style=flat-square)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/sourcebot)](https://artifacthub.io/packages/search?repo=sourcebot)
 
-The open source Sourcegraph alternative. Sourcebot gives you a powerful interface to search through all your repos and branches across multiple code hosts.
+Sourcebot is a self-hosted tool that helps you understand your codebase. This repository contains the official helm chart for deploying Sourcebot onto a Kubernetes cluster.
 
 **Homepage:** <https://sourcebot.dev/>
-
-## TL;DR
-
-```bash
-# Create a secret with your credentials
-kubectl create secret generic sourcebot \
-  --from-literal=postgresql-password=your-secure-password \
-  --from-literal=redis-password=your-secure-password
-
-# Add the Helm repository
-helm repo add sourcebot https://sourcebot-dev.github.io/sourcebot-helm-chart
-helm repo update
-
-# Install Sourcebot
-helm install sourcebot sourcebot/sourcebot \
-  --set postgresql.auth.existingSecret=sourcebot \
-  --set redis.auth.existingSecret=sourcebot
-```
 
 ## Introduction
 
