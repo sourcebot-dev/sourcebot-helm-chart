@@ -83,6 +83,9 @@
         "additionalEnv": {
           "type": "array"
         },
+        "envFrom": {
+          "type": "array"
+        },
         "config": {
           "type": "object"
         },

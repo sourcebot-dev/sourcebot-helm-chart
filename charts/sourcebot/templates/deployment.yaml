@@ -47,6 +47,10 @@ spec:
           {{- with $.Values.sourcebot.args }}
           args: {{ toYaml . | nindent 12 }}
           {{- end }}
+          {{- with $.Values.sourcebot.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             {{- if and $.Values.sourcebot.ingress.enabled (gt (len $.Values.sourcebot.ingress.hosts) 0) }}
             - name: AUTH_URL

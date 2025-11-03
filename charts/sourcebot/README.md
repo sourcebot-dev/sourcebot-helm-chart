@@ -55,6 +55,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.command | list | `[]` | Override the default command of the container |
 | sourcebot.config | object | `{"$schema":"https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json","connections":{},"settings":{}}` | Configure Sourcebot-specific application settings |
 | sourcebot.containerSecurityContext | object | `{}` | Set the container-level security context |
+| sourcebot.envFrom | list | `[]` | Load environment variables from ConfigMaps and Secrets This is useful for injecting multiple environment variables from external secret management systems |
 | sourcebot.extraVolumeMounts | list | `[]` | Define volume mounts for the container See: https://kubernetes.io/docs/concepts/storage/volumes/ |
 | sourcebot.extraVolumes | list | `[]` | Define additional volumes See: https://kubernetes.io/docs/concepts/storage/volumes/ |
 | sourcebot.image.digest | string | `""` | Container image digest (used instead of tag if set) |
