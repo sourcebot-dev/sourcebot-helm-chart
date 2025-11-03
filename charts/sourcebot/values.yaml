@@ -55,6 +55,14 @@ sourcebot:
   # - name: SOURCEBOT_TELEMETRY_DISABLED
   #   value: "1"
 
+  # -- Load environment variables from ConfigMaps and Secrets
+  # This is useful for injecting multiple environment variables from external secret management systems
+  envFrom: []
+  # - secretRef:
+  #     name: sourcebot-secrets
+  # - configMapRef:
+  #     name: sourcebot-config
+
   # -- Configure Sourcebot-specific application settings
   config:
     # Schema version of the Sourcebot configuration
