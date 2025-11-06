@@ -15,6 +15,10 @@
               "type": "boolean"
             }
           }
+        },
+        "imagePullSecrets": {
+          "type": "array",
+          "items": { "type": "string" }
         }
       }
     },
