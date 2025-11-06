@@ -93,11 +93,11 @@ sourcebot:
     automount: false
 
   # -- Set the pod-level security context
-  podSecurityContext: {}
-  # runAsUser: 1000
-  # runAsGroup: 1000
-  # runAsNonRoot: true
-  # fsGroup: 1000
+  podSecurityContext:
+    runAsUser: 1500
+    runAsGroup: 1500
+    fsGroup: 1500
+    runAsNonRoot: true
 
   # -- Set the container-level security context
   containerSecurityContext: {}
