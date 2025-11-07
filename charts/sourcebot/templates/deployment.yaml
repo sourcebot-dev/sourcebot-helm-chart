@@ -25,9 +25,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "sourcebot.serviceAccountName" $ }}
-      {{- with $.Values.sourcebot.podSecurityContext }}
+      {{- if $.Values.sourcebot.podSecurityContext }}
       securityContext:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml $.Values.sourcebot.podSecurityContext | nindent 8 }}
       {{- end }}
       {{- with $.Values.sourcebot.initContainers }}
       initContainers:
