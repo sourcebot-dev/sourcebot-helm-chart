@@ -218,7 +218,7 @@ sourcebot:
 Check out the [examples directory](./examples/) for complete configuration examples:
 
 - [Minimal Installation](./examples/minimal-installation/) - Basic setup with subcharts
-- More examples coming soon!
+- More examples coming soon
 
 ## Upgrading
 
@@ -227,10 +227,6 @@ Check out the [examples directory](./examples/) for complete configuration examp
 ```bash
 helm upgrade sourcebot sourcebot/sourcebot -f values.yaml
 ```
-
-### Major Version Upgrades
-
-Always check the [CHANGELOG](../../CHANGELOG.md) for breaking changes before upgrading between major versions.
 
 ## Uninstalling
 
