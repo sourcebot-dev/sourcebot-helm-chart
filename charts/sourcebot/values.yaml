@@ -4,6 +4,9 @@ global:
   security:
     # -- Allow insecure images to use bitnami legacy repository. Can be set to false if secure images are being used (Paid).
     allowInsecureImages: true
+  
+  # -- Global Docker registry secret names as an array
+  imagePullSecrets: []
 
 # -- Override the name for the selector labels, defaults to the chart name
 nameOverride: ""
