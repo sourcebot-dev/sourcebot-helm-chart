@@ -25,7 +25,7 @@ By default, this chart deploys:
 
 ### Quick Start
 
-See the [minimal installation example](./examples/minimal-installation/) for a complete quick start guide.
+See the [minimal installation example](./examples/minimal-installation/) for a example deployment.
 
 ### Step-by-Step Installation
 
