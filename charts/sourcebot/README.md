@@ -90,7 +90,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.podDisruptionBudget.enabled | bool | `true` | Enable Pod Disruption Budget |
 | sourcebot.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number of pods that can be unavailable |
 | sourcebot.podDisruptionBudget.minAvailable | int | `1` | Minimum number of pods that must be available |
-| sourcebot.podSecurityContext | object | `{}` | Set the pod-level security context |
+| sourcebot.podSecurityContext | object | `{"fsGroup":1500,"runAsGroup":1500,"runAsNonRoot":true,"runAsUser":1500}` | Set the pod-level security context |
 | sourcebot.priorityClassName | string | `""` | Set the priority class name for pods See: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/ |
 | sourcebot.readinessProbe.failureThreshold | int | `5` | Number of consecutive failures before marking the container as not ready |
 | sourcebot.readinessProbe.httpGet | object | `{"path":"/api/health","port":"http"}` | Http GET request to check if the container is ready |
