@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "sourcebot.fullname" $ }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "sourcebot.labels" $ | nindent 4 }}
 spec:

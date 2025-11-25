@@ -3,6 +3,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "sourcebot.fullname" $ }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "sourcebot.labels" $ | nindent 4 }}
 spec:
