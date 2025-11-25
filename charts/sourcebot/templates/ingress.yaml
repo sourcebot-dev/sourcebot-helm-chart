@@ -4,6 +4,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "sourcebot.fullname" $ }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "sourcebot.labels" $ | nindent 4 }}
   {{- with $.Values.sourcebot.ingress.annotations }}

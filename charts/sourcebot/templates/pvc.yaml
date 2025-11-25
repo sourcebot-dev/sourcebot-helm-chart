@@ -4,6 +4,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "sourcebot.fullname" . }}-data
+  namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "sourcebot.labels" . | nindent 4 }}
   {{- with .Values.sourcebot.persistence.annotations }}
