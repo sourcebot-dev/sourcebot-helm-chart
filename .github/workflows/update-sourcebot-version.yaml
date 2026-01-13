@@ -16,6 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          repository: sourcebot-dev/sourcebot-helm-chart
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get current Sourcebot version
