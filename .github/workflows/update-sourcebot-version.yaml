@@ -113,6 +113,7 @@ jobs:
             **Release Notes**: https://github.com/sourcebot-dev/sourcebot/releases/tag/${{ steps.latest-version.outputs.latest }}
           branch: update-sourcebot-${{ steps.latest-version.outputs.latest }}
           delete-branch: true
+          reviewers: brendan-kellam
           labels: |
             automated
             dependencies
