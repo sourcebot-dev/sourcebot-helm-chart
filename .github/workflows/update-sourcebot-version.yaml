@@ -4,6 +4,13 @@ on:
     - cron: '0 9 * * 1'  # Run every Monday at 9 AM UTC
   workflow_dispatch:  # Allow manual triggering
   workflow_call:  # Allow calling from other workflows
+    secrets:
+      GITHUB_APP_ID:
+        description: 'GitHub App ID for authentication'
+        required: false
+      GITHUB_APP_PRIVATE_KEY:
+        description: 'GitHub App private key for authentication'
+        required: false
 
 jobs:
   check-and-update:
@@ -13,11 +20,20 @@ jobs:
       pull-requests: write
     
     steps:
+      - name: Generate GitHub App token
+        if: ${{ secrets.GITHUB_APP_ID != '' && secrets.GITHUB_APP_PRIVATE_KEY != '' }}
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GITHUB_APP_ID }}
+          private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+          repositories: sourcebot-helm-chart
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           repository: sourcebot-dev/sourcebot-helm-chart
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
 
       - name: Get current Sourcebot version
         id: current-version
@@ -89,7 +105,7 @@ jobs:
         if: steps.version-check.outputs.needs_update == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
           commit-message: |
             chore: bump sourcebot to ${{ steps.latest-version.outputs.latest }}
             
