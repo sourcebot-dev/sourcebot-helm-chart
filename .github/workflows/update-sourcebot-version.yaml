@@ -15,10 +15,12 @@ jobs:
     steps:
       - name: Generate GitHub App token
         id: generate_token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: sourcebot-dev
+          repositories: sourcebot-helm-chart
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -94,7 +96,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.version-check.outputs.needs_update == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.generate_token.outputs.token }}
           commit-message: |
@@ -120,7 +122,9 @@ jobs:
             **Release Notes**: https://github.com/sourcebot-dev/sourcebot/releases/tag/${{ steps.latest-version.outputs.latest }}
           branch: update-sourcebot-${{ steps.latest-version.outputs.latest }}
           delete-branch: true
-          reviewers: brendan-kellam
+          reviewers: |
+            brendan-kellam
+            msukkari
           labels: |
             automated
             dependencies
