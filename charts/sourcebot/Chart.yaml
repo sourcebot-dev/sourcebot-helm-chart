@@ -1,8 +1,8 @@
 apiVersion: v2
 type: application
 name: sourcebot
-version: 0.1.23
-appVersion: v4.10.16
+version: 0.1.24
+appVersion: v4.10.17
 description: Sourcebot is a self-hosted tool that helps you understand your codebase.
 icon: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/ebf6721836b8f878d42bb8c1e844bdc7867a74fe/packages/web/public/logo_512.png
 keywords:
