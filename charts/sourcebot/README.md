@@ -1,6 +1,6 @@
 # sourcebot
 
-![Version: 0.1.60](https://img.shields.io/badge/Version-0.1.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v4.15.9](https://img.shields.io/badge/AppVersion-v4.15.9-informational?style=flat-square)
+![Version: 0.1.61](https://img.shields.io/badge/Version-0.1.61-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v4.15.11](https://img.shields.io/badge/AppVersion-v4.15.11-informational?style=flat-square)
 
 Sourcebot is a self-hosted tool that helps you understand your codebase.
 
