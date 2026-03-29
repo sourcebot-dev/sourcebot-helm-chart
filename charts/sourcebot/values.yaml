@@ -4,7 +4,7 @@ global:
   security:
     # -- Allow insecure images to use bitnami legacy repository. Can be set to false if secure images are being used (Paid).
     allowInsecureImages: true
-  
+
   # -- Global Docker registry secret names as an array
   imagePullSecrets: []
 
@@ -18,6 +18,10 @@ fullnameOverride: ""
 sourcebot:
   # -- Set the number of replicas for the deployment
   replicaCount: 1
+
+  # -- Deployment strategy configuration
+  strategy:
+    type: RollingUpdate
 
   # Image configuration
   image:

@@ -36,6 +36,18 @@
           "type": "integer",
           "minimum": 1
         },
+        "strategy": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["RollingUpdate", "Recreate"]
+            },
+            "rollingUpdate": {
+              "type": "object"
+            }
+          }
+        },
         "image": {
           "type": "object",
           "properties": {
