@@ -38,15 +38,23 @@
         },
         "strategy": {
           "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["RollingUpdate", "Recreate"]
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "type": { "type": "string", "const": "RollingUpdate" },
+                "rollingUpdate": { "type": "object" }
+              },
+              "required": ["type"]
             },
-            "rollingUpdate": {
-              "type": "object"
+            {
+              "additionalProperties": false,
+              "properties": {
+                "type": { "type": "string", "const": "Recreate" }
+              },
+              "required": ["type"]
             }
-          }
+          ]
         },
         "image": {
           "type": "object",
