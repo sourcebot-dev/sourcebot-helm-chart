@@ -36,6 +36,26 @@
           "type": "integer",
           "minimum": 1
         },
+        "strategy": {
+          "type": "object",
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "type": { "type": "string", "const": "RollingUpdate" },
+                "rollingUpdate": { "type": "object" }
+              },
+              "required": ["type"]
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "type": { "type": "string", "const": "Recreate" }
+              },
+              "required": ["type"]
+            }
+          ]
+        },
         "image": {
           "type": "object",
           "properties": {
