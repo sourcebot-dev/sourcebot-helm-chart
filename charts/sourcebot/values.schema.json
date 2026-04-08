@@ -63,6 +63,12 @@
         "args": {
           "type": "array"
         },
+        "authSecret": {
+          "type": "object"
+        },
+        "encryptionKey": {
+          "type": "object"
+        },
         "license": {
           "type": "object"
         },

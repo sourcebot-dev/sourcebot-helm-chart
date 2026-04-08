@@ -15,74 +15,268 @@ By default, this chart deploys:
 - PostgreSQL database (via Bitnami subchart)
 - Redis/Valkey cache (via Bitnami subchart)
 
-## Prerequisites
-
-- Kubernetes 1.19+
-- Helm 3.x
-- PV provisioner support in the underlying infrastructure (for PostgreSQL and Sourcebot data persistence)
-
-## Installing the Chart
-
-### Quick Start
-
 See the [minimal installation example](./examples/minimal-installation/) for a example deployment.
 
-### Step-by-Step Installation
+## Installation
 
-1. **Create a Secret** with your database and Redis passwords:
-
-```bash
-kubectl create secret generic sourcebot \
-  --from-literal=postgresql-password=your-secure-password \
-  --from-literal=redis-password=your-secure-password
+1. Create a [config.json](https://docs.sourcebot.dev/docs/configuration/config-file) to configure repositories, language models, SSO identity providers, etc.
+```jsonc
+{
+    "$schema": "https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json",
+    "connections": {
+        "github-repos": {
+            "type": "github",
+            "repos": [
+                "sourcebot-dev/sourcebot"
+            ]
+        }
+    }
+}
 ```
 
-2. **Add the Helm Repository**:
+2. Create a `values.yaml` file to configure the required configuration options:
+```yaml
+sourcebot:
+  authSecret:
+    value: "CHANGEME"   # generate via: openssl rand -base64 33
+  encryptionKey:
+    value: "CHANGEME"   # generate via: openssl rand -base64 24
 
+postgresql:
+  auth:
+    password: "CHANGEME"
+
+redis:
+  auth:
+    password: "CHANGEME"
+```
+
+They can alternatively be set via [secrets](https://kubernetes.io/docs/concepts/configuration/secret) (the secrets must exist):
+```yaml
+sourcebot:
+  authSecret:
+    existingSecret: sourcebot-secrets
+    existingSecretKey: authSecret
+  encryptionKey:
+    existingSecret: sourcebot-secrets
+    existingSecretKey: encryptionKey
+
+postgresql:
+  auth:
+    existingSecret: sourcebot-secrets
+    secretKeys:
+      userPasswordKey: password
+      adminPasswordKey: postgres-password
+
+redis:
+  auth:
+    existingSecret: sourcebot-secrets
+    existingSecretPasswordKey: redis-password
+```
+
+3. Install & deploy the chart:
 ```bash
 helm repo add sourcebot https://sourcebot-dev.github.io/sourcebot-helm-chart
 helm repo update
+helm install sourcebot sourcebot/sourcebot \
+  -f values.yaml \
+  --set-json "sourcebot.config=$(cat config.json)"
 ```
 
-3. **Install the Chart**:
+## Upgrading
+
+```bash
+helm repo update
+helm upgrade sourcebot sourcebot/sourcebot \
+  -f values.yaml \
+  --set-json "sourcebot.config=$(cat config.json)"
+```
+
+## Sizing
+
+By default, the chart will run with the minimum resources to provide a stable experience. For production environments, we recommend to adjust the following parameters in the values.yaml.
+
+```yaml
+sourcebot:
+  resources:
+    requests:
+      cpu: "2"
+      memory: 4Gi
+    limits:
+      cpu: "2"
+      memory: 4Gi
+
+postgresql:
+  primary:
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
+      limits:
+        cpu: "2"
+        memory: 4Gi
+
+redis:
+  primary:
+    resources:
+      requests:
+        cpu: "1"
+        memory: "1.5Gi"
+      limits:
+        cpu: "1"
+        memory: "1.5Gi"
+```
+
+## App configuration
+
+Sourcebot is configured via a JSON [config file](https://docs.sourcebot.dev/docs/configuration/config-file#config-file) as well as [environment variables](https://docs.sourcebot.dev/docs/configuration/environment-variables).
+
+### config.json
+For the config file, it is recommended to create a separate `config.json` and use `--set-json` on the [helm install](https://helm.sh/docs/helm/helm_install/) command:
+
+```jsonc
+// config.json
+{
+    "$schema": "https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json",
+    "connections": {
+        "github-repos": {
+            "type": "github",
+            "repos": [
+                "sourcebot-dev/sourcebot"
+            ]
+        }
+    }
+}
+```
 
 ```bash
 helm install sourcebot sourcebot/sourcebot \
-  --set postgresql.auth.existingSecret=sourcebot \
-  --set redis.auth.existingSecret=sourcebot
+  -f values.yaml \
+  --set-json "sourcebot.config=$(cat config.json)"
 ```
 
-Or using a values file:
+Alternatively, you can define the config directly in a `values.yaml` file:
 
-```bash
-helm install sourcebot sourcebot/sourcebot -f values.yaml
+```yaml
+sourcebot:
+  config:
+    $schema: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json
+    connections:
+      github-repos:
+        type: github
+        repos:
+          - sourcebot-dev/sourcebot
 ```
 
-## Configuration
+### Environment variables
 
-### Database Configuration
+Environment variables are used to pass secrets to the `config.json` as well as to configure other options. See the [environment variables docs](https://docs.sourcebot.dev/docs/configuration/environment-variables) for a full list of supported variables.
 
-By default, PostgreSQL is deployed as a subchart. The chart automatically configures the connection using component-based environment variables (`DATABASE_HOST`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`, etc.), which are assembled into `DATABASE_URL` by the application's entrypoint script.
+For sensitive values, use `additionalEnvSecrets` to reference keys in an existing Kubernetes Secret:
 
-#### Using the Deployed PostgreSQL Subchart
+```yaml
+sourcebot:
+  additionalEnvSecrets:
+    - envName: GITHUB_TOKEN
+      secretName: sourcebot-secrets
+      secretKey: github-token
+    - envName: ANTHROPIC_API_KEY
+      secretName: sourcebot-secrets
+      secretKey: anthropic-api-key
+```
+
+For non-sensitive values, use `additionalEnv`:
+
+```yaml
+sourcebot:
+  additionalEnv:
+    - name: SOURCEBOT_LOG_LEVEL
+      value: "debug"
+```
+
+You can also mount entire Secrets or ConfigMaps using `envFrom`:
+
+```yaml
+sourcebot:
+  envFrom:
+    - secretRef:
+        name: my-env-secrets
+```
+
+### License Key
+
+To enable Enterprise Edition features, set your license key directly:
+
+```yaml
+sourcebot:
+  license:
+    value: "your-license-key"
+```
+
+Or via an existing secret:
+
+```yaml
+sourcebot:
+  license:
+    existingSecret: sourcebot-secrets
+    existingSecretKey: license-key
+```
+
+## Persistence
+
+Each component has its own persistent volume for storing data across pod restarts.
+
+### Sourcebot
+
+Stores cloned repositories and search indexes. Enabled by default with a 10Gi volume.
+
+```yaml
+sourcebot:
+  persistence:
+    enabled: true    # Default
+    size: 10Gi       # Increase for large or many repositories
+    storageClass: "" # Uses cluster default
+    accessModes:
+      - ReadWriteOnce
+```
+
+To use an existing [persistent volume claim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) (PVC):
+
+```yaml
+sourcebot:
+  persistence:
+    existingClaim: my-existing-pvc
+```
+
+### PostgreSQL
+
+Managed by the [Bitnami PostgreSQL subchart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql). Enabled by default with an 8Gi volume.
 
 ```yaml
 postgresql:
-  deploy: true  # Default
-  auth:
-    username: sourcebot
-    database: sourcebot
-    existingSecret: sourcebot
-    secretKeys:
-      userPasswordKey: postgresql-password
-      adminPasswordKey: postgresql-password
   primary:
     persistence:
       enabled: true
       size: 8Gi
+      storageClass: ""
 ```
 
-#### Using an External PostgreSQL Instance
+### Redis
+
+Managed by the [Bitnami Valkey subchart](https://github.com/bitnami/charts/tree/main/bitnami/valkey). Enabled by default with an 8Gi volume.
+
+```yaml
+redis:
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+      storageClass: ""
+```
+
+## Examples
+
+### Using an external Postgres server
 
 ```yaml
 postgresql:
@@ -94,25 +288,10 @@ postgresql:
     database: sourcebot
     existingSecret: sourcebot
     secretKeys:
-      userPasswordKey: postgresql-password
+      userPasswordKey: password
 ```
 
-### Redis Configuration
-
-Similar to PostgreSQL, Redis/Valkey can be deployed as a subchart or configured to use an external instance.
-
-#### Using the Deployed Redis Subchart
-
-```yaml
-redis:
-  deploy: true  # Default
-  auth:
-    username: default
-    existingSecret: sourcebot
-    existingSecretPasswordKey: redis-password
-```
-
-#### Using an External Redis Instance
+### Using an external Redis server
 
 ```yaml
 redis:
@@ -125,58 +304,7 @@ redis:
     existingSecretPasswordKey: redis-password
 ```
 
-### Sourcebot Configuration
-
-Configure your code repositories and other settings:
-
-```yaml
-sourcebot:
-  config:
-    $schema: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json
-    connections:
-      github-repos:
-        type: github
-        token:
-          env: GITHUB_TOKEN
-        repos:
-          - owner/repo1
-          - owner/repo2
-    settings:
-      reindexIntervalMs: 86400000  # 24 hours
-```
-
-### Persistence Configuration
-
-By default, Sourcebot uses persistent storage to retain repository data and search indexes across pod restarts:
-
-```yaml
-sourcebot:
-  persistence:
-    enabled: true  # Default
-    size: 10Gi
-    storageClass: ""  # Uses cluster default
-    accessModes:
-      - ReadWriteOnce
-```
-
-To use an existing PersistentVolumeClaim:
-
-```yaml
-sourcebot:
-  persistence:
-    enabled: true
-    existingClaim: my-existing-pvc
-```
-
-To disable persistence (not recommended for production):
-
-```yaml
-sourcebot:
-  persistence:
-    enabled: false
-```
-
-### Ingress Configuration
+### Configuring a ingress
 
 Enable ingress to expose Sourcebot:
 
@@ -198,34 +326,12 @@ sourcebot:
         secretName: sourcebot-tls
 ```
 
-### Resource Limits
-
-Set appropriate resource limits for production:
+### Using an existing PVC
 
 ```yaml
 sourcebot:
-  resources:
-    requests:
-      cpu: 1000m
-      memory: 2Gi
-    limits:
-      cpu: 2000m
-      memory: 4Gi
-```
-
-## Examples
-
-Check out the [examples directory](./examples/) for complete configuration examples:
-
-- [Minimal Installation](./examples/minimal-installation/) - Basic setup with subcharts
-- More examples coming soon
-
-## Upgrading
-
-### To a New Version
-
-```bash
-helm upgrade sourcebot sourcebot/sourcebot -f values.yaml
+  persistence:
+    existingClaim: my-existing-pvc
 ```
 
 ## Uninstalling

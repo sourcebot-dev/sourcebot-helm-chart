@@ -16,10 +16,10 @@ helm repo update
 Edit `secrets.yaml` and replace the placeholder values:
 
 ```bash
-# Generate AUTH_SECRET
+# Generate authSecret
 openssl rand -base64 33
 
-# Generate SOURCEBOT_ENCRYPTION_KEY
+# Generate encryptionKey
 openssl rand -base64 24
 ```
 
@@ -31,12 +31,14 @@ kubectl apply -f secrets.yaml
 
 ### 3. Configure Your Repositories
 
-Edit `values.yaml` and update the repositories you want to index. See the [configuration docs](https://docs.sourcebot.dev/docs/configuration/config-file#config-file-schema) for more information.
+Edit `config.json` and update the repositories you want to index. See the [configuration docs](https://docs.sourcebot.dev/docs/configuration/config-file#config-file-schema) for more information.
 
 ### 4. Deploy
 
 ```bash
-helm install sourcebot sourcebot/sourcebot -f values.yaml
+helm install sourcebot sourcebot/sourcebot \
+  -f values.yaml \
+  --set-json "sourcebot.config=$(cat config.json)"
 ```
 
 ### 5. Access Sourcebot
