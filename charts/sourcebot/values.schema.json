@@ -63,8 +63,29 @@
         "args": {
           "type": "array"
         },
+        "authSecret": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "string" },
+            "existingSecret": { "type": "string" },
+            "existingSecretKey": { "type": "string" }
+          }
+        },
+        "encryptionKey": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "string" },
+            "existingSecret": { "type": "string" },
+            "existingSecretKey": { "type": "string" }
+          }
+        },
         "license": {
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "value": { "type": "string" },
+            "existingSecret": { "type": "string" },
+            "existingSecretKey": { "type": "string" }
+          }
         },
         "additionalEnvSecrets": {
           "type": "array",

@@ -30,7 +30,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | postgresql.auth.database | string | `"sourcebot"` | Database name |
 | postgresql.auth.existingSecret | string | `""` | Use an existing secret for PostgreSQL password |
 | postgresql.auth.password | string | `""` | Password for PostgreSQL user (only used if existingSecret is not set) |
-| postgresql.auth.secretKeys | object | `{"adminPasswordKey":"postgresql-password","userPasswordKey":"postgresql-password"}` | Keys in the existing secret |
+| postgresql.auth.secretKeys | object | `{"adminPasswordKey":"postgres-password","userPasswordKey":"password"}` | Keys in the existing secret |
 | postgresql.auth.username | string | `"sourcebot"` | Username to connect to PostgreSQL |
 | postgresql.deploy | bool | `true` | Deploy PostgreSQL subchart. Set to false to use an external PostgreSQL instance. |
 | postgresql.host | string | `""` | PostgreSQL host (only used if deploy is false) |
@@ -38,6 +38,10 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | postgresql.port | int | `5432` | PostgreSQL port |
 | postgresql.primary.persistence.enabled | bool | `true` |  |
 | postgresql.primary.persistence.size | string | `"8Gi"` |  |
+| postgresql.primary.resources.limits.cpu | string | `"2"` | CPU limit for the PostgreSQL container |
+| postgresql.primary.resources.limits.memory | string | `"4Gi"` | Memory limit for the PostgreSQL container |
+| postgresql.primary.resources.requests.cpu | string | `"2"` | CPU request for the PostgreSQL container |
+| postgresql.primary.resources.requests.memory | string | `"4Gi"` | Memory request for the PostgreSQL container |
 | redis.auth.database | int | `0` | Redis database number |
 | redis.auth.existingSecret | string | `""` | Use an existing secret for Redis password |
 | redis.auth.existingSecretPasswordKey | string | `"redis-password"` | Key in the existing secret that contains the Redis password |
@@ -47,15 +51,25 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | redis.host | string | `""` | Redis host (only used if deploy is false) |
 | redis.image.repository | string | `"bitnamilegacy/valkey"` | Overwrite default repository of helm chart to point to non-paid bitnami images |
 | redis.port | int | `6379` | Redis port |
+| redis.primary.resources.limits.cpu | string | `"1"` | CPU limit for the Redis container |
+| redis.primary.resources.limits.memory | string | `"1.5Gi"` | Memory limit for the Redis container |
+| redis.primary.resources.requests.cpu | string | `"1"` | CPU request for the Redis container |
+| redis.primary.resources.requests.memory | string | `"1.5Gi"` | Memory request for the Redis container |
 | sourcebot.additionalEnv | list | `[]` | Set additional environment variables |
 | sourcebot.additionalEnvSecrets | list | `[]` | Set environment variables from Kubernetes secrets |
 | sourcebot.additionalLabels | object | `{}` | Add extra labels to all resources |
 | sourcebot.additionalPorts | list | `[]` | Configure additional ports to expose on the container and service |
 | sourcebot.affinity | object | `{}` | Set affinity rules for pod scheduling Defaults to soft anti-affinity if not set See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/ |
 | sourcebot.args | list | `[]` | Override the default arguments of the container |
+| sourcebot.authSecret.existingSecret | string | `""` | Use an existing secret for the auth secret |
+| sourcebot.authSecret.existingSecretKey | string | `"AUTH_SECRET"` | Key in the existing secret that contains the auth secret |
+| sourcebot.authSecret.value | string | `""` | Auth secret value (or use existingSecret). Generate via: openssl rand -base64 33 |
 | sourcebot.command | list | `[]` | Override the default command of the container |
 | sourcebot.config | object | `{"$schema":"https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json","connections":{},"settings":{}}` | Configure Sourcebot-specific application settings |
 | sourcebot.containerSecurityContext | object | `{}` | Set the container-level security context |
+| sourcebot.encryptionKey.existingSecret | string | `""` | Use an existing secret for the encryption key |
+| sourcebot.encryptionKey.existingSecretKey | string | `"SOURCEBOT_ENCRYPTION_KEY"` | Key in the existing secret that contains the encryption key |
+| sourcebot.encryptionKey.value | string | `""` | Encryption key value (or use existingSecret). Generate via: openssl rand -base64 24 |
 | sourcebot.envFrom | list | `[]` | Load environment variables from ConfigMaps and Secrets This is useful for injecting multiple environment variables from external secret management systems |
 | sourcebot.extraVolumeMounts | list | `[]` | Define volume mounts for the container See: https://kubernetes.io/docs/concepts/storage/volumes/ |
 | sourcebot.extraVolumes | list | `[]` | Define additional volumes See: https://kubernetes.io/docs/concepts/storage/volumes/ |
@@ -99,7 +113,10 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.readinessProbe.initialDelaySeconds | int | `20` | Initial delay before the first probe |
 | sourcebot.readinessProbe.periodSeconds | int | `10` | Frequency of the probe |
 | sourcebot.replicaCount | int | `1` | Set the number of replicas for the deployment |
-| sourcebot.resources | object | `{}` | Configure resource requests and limits for the container |
+| sourcebot.resources.limits.cpu | string | `"2"` | CPU limit for the Sourcebot container |
+| sourcebot.resources.limits.memory | string | `"4Gi"` | Memory limit for the Sourcebot container |
+| sourcebot.resources.requests.cpu | string | `"2"` | CPU request for the Sourcebot container |
+| sourcebot.resources.requests.memory | string | `"4Gi"` | Memory request for the Sourcebot container |
 | sourcebot.service.annotations | object | `{}` | Service annotations |
 | sourcebot.service.containerPort | int | `3000` | Internal container port |
 | sourcebot.service.port | int | `3000` | External service port |

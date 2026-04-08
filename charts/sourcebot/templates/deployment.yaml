@@ -59,6 +59,18 @@ spec:
             {{- end }}
             - name: CONFIG_PATH
               value: /etc/sourcebot/config.json
+            {{- if or $.Values.sourcebot.authSecret.value $.Values.sourcebot.authSecret.existingSecret }}
+            - name: AUTH_SECRET
+              {{- with (include "sourcebot.getValueOrSecret" (dict "value" $.Values.sourcebot.authSecret)) }}
+              {{- . | nindent 14 }}
+              {{- end }}
+            {{- end }}
+            {{- if or $.Values.sourcebot.encryptionKey.value $.Values.sourcebot.encryptionKey.existingSecret }}
+            - name: SOURCEBOT_ENCRYPTION_KEY
+              {{- with (include "sourcebot.getValueOrSecret" (dict "value" $.Values.sourcebot.encryptionKey)) }}
+              {{- . | nindent 14 }}
+              {{- end }}
+            {{- end }}
             {{- if or $.Values.sourcebot.license.value $.Values.sourcebot.license.existingSecret }}
             - name: SOURCEBOT_EE_LICENSE_KEY
               {{- with (include "sourcebot.getValueOrSecret" (dict "value" $.Values.sourcebot.license)) }}
