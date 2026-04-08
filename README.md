@@ -15,12 +15,12 @@ By default, this chart deploys:
 - PostgreSQL database (via Bitnami subchart)
 - Redis/Valkey cache (via Bitnami subchart)
 
-See the [minimal installation example](./examples/minimal-installation/) for a example deployment.
+See the [minimal installation example](./examples/minimal-installation/) for an example deployment.
 
 ## Installation
 
 1. Create a [config.json](https://docs.sourcebot.dev/docs/configuration/config-file) to configure repositories, language models, SSO identity providers, etc.
-```jsonc
+```json
 {
     "$schema": "https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json",
     "connections": {
@@ -134,8 +134,7 @@ Sourcebot is configured via a JSON [config file](https://docs.sourcebot.dev/docs
 ### config.json
 For the config file, it is recommended to create a separate `config.json` and use `--set-json` on the [helm install](https://helm.sh/docs/helm/helm_install/) command:
 
-```jsonc
-// config.json
+```json
 {
     "$schema": "https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json",
     "connections": {
@@ -304,7 +303,7 @@ redis:
     existingSecretPasswordKey: redis-password
 ```
 
-### Configuring a ingress
+### Configuring an ingress
 
 Enable ingress to expose Sourcebot:
 
