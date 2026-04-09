@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.71] - 2026-04-09
+
 ### Added
 - Added default resource requests/limits for Sourcebot (2 CPU/4Gi), PostgreSQL (2 CPU/4Gi), and Redis (1 CPU/1.5Gi). [#88](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/88)
 - Added `sourcebot.authSecret` and `sourcebot.encryptionKey` fields to values.yaml, supporting both direct values and existing secret references. [#88](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/88)
