@@ -221,6 +221,37 @@ sourcebot:
     existingSecretKey: license-key
 ```
 
+## Deployment Strategy
+
+By default, the chart uses a `RollingUpdate` strategy, which creates the new pod before terminating the old one during upgrades. You can customize the rolling update behavior:
+```yaml
+sourcebot:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+```
+
+On multi-node clusters with `ReadWriteOnce` persistent volumes, the new pod may fail to start if it gets scheduled on a different node than the old pod. To avoid this, you can pin pods to the same node using pod affinity:
+```yaml
+sourcebot:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: sourcebot
+          topologyKey: kubernetes.io/hostname
+```
+
+Alternatively, you can use the `Recreate` strategy, which terminates the old pod before creating the new one. This avoids PVC conflicts but causes brief downtime during upgrades:
+```yaml
+sourcebot:
+  strategy:
+    type: Recreate
+```
+
 ## Persistence
 
 Each component has its own persistent volume for storing data across pod restarts.
@@ -323,6 +354,31 @@ sourcebot:
       - hosts:
           - sourcebot.example.com
         secretName: sourcebot-tls
+```
+
+### Zero-downtime upgrades on multi-node clusters
+
+Use a `ReadWriteMany` access mode so the old and new pods can mount the PVC simultaneously during rolling updates. This requires a storage class that supports `ReadWriteMany` (e.g., EFS on AWS, Filestore on GCP, Azure Files):
+
+```yaml
+sourcebot:
+  persistence:
+    accessModes:
+      - ReadWriteMany
+    storageClass: "efs-sc"  # example: AWS EFS storage class
+```
+
+Alternatively, you can keep `ReadWriteOnce` and use pod affinity to pin pods to the same node:
+
+```yaml
+sourcebot:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: sourcebot
+          topologyKey: kubernetes.io/hostname
 ```
 
 ### Using an existing PVC
