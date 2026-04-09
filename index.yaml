@@ -3,6 +3,35 @@ entries:
   sourcebot:
   - apiVersion: v2
     appVersion: v4.16.7
+    created: "2026-04-09T00:13:35.871375332Z"
+    dependencies:
+    - condition: postgresql.deploy
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 16.4.9
+    - alias: redis
+      condition: redis.deploy
+      name: valkey
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 2.2.4
+    description: Sourcebot is a self-hosted tool that helps you understand your codebase.
+    digest: ae01a5823d2bc2c54108334d81f1803ff0500ae876b6c46b071c8e2c0e67f25c
+    home: https://sourcebot.dev/
+    icon: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/ebf6721836b8f878d42bb8c1e844bdc7867a74fe/packages/web/public/logo_512.png
+    keywords:
+    - code-search
+    - code-intelligence
+    - sourcebot
+    name: sourcebot
+    sources:
+    - https://github.com/sourcebot-dev/sourcebot
+    - https://github.com/sourcebot-dev/sourcebot/kubernetes/chart
+    type: application
+    urls:
+    - https://github.com/sourcebot-dev/sourcebot-helm-chart/releases/download/sourcebot-0.1.71/sourcebot-0.1.71.tgz
+    version: 0.1.71
+  - apiVersion: v2
+    appVersion: v4.16.7
     created: "2026-04-03T17:27:37.074898252Z"
     dependencies:
     - condition: postgresql.deploy
@@ -2060,4 +2089,4 @@ entries:
     urls:
     - https://github.com/sourcebot-dev/sourcebot-helm-chart/releases/download/sourcebot-0.1.0/sourcebot-0.1.0.tgz
     version: 0.1.0
-generated: "2026-04-03T17:27:37.075140062Z"
+generated: "2026-04-09T00:13:35.871653211Z"
