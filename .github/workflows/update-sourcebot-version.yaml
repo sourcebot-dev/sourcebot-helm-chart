@@ -81,6 +81,20 @@ jobs:
           
           echo "chart_version=$NEW_CHART_VERSION" >> $GITHUB_OUTPUT
 
+      - name: Update CHANGELOG.md
+        if: steps.version-check.outputs.needs_update == 'true'
+        run: |
+          LATEST_VERSION=${{ steps.latest-version.outputs.latest }}
+
+          # Add changelog entry under [Unreleased]
+          sed -i "/## \[Unreleased\]/a\\
+          \\
+          ### Changed\\
+          - Bumped Sourcebot to $LATEST_VERSION. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/$LATEST_VERSION)" CHANGELOG.md
+
+          echo "Updated CHANGELOG.md"
+          cat CHANGELOG.md | head -n 15
+
       - name: Install helm-docs
         if: steps.version-check.outputs.needs_update == 'true'
         run: |
