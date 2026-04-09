@@ -42,6 +42,24 @@ sourcebot:
   # -- Override the default arguments of the container
   args: []
 
+  # Auth secret used for session signing (required)
+  authSecret:
+    # -- Auth secret value (or use existingSecret). Generate via: openssl rand -base64 33
+    value: ""
+    # -- Use an existing secret for the auth secret
+    existingSecret: ""
+    # -- Key in the existing secret that contains the auth secret
+    existingSecretKey: AUTH_SECRET
+
+  # Encryption key used for encrypting sensitive data (required)
+  encryptionKey:
+    # -- Encryption key value (or use existingSecret). Generate via: openssl rand -base64 24
+    value: ""
+    # -- Use an existing secret for the encryption key
+    existingSecret: ""
+    # -- Key in the existing secret that contains the encryption key
+    existingSecretKey: SOURCEBOT_ENCRYPTION_KEY
+
   # License configuration
   license:
     # -- License key value (or use existingSecret)
@@ -164,15 +182,18 @@ sourcebot:
   #     - sleep
   #     - "10"
 
-  # -- Configure resource requests and limits for the container
-  resources: {}
-  ## It is recommended to set resources explicitly in production environments.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  # Configure resource requests and limits for the container
+  resources:
+    requests:
+      # -- CPU request for the Sourcebot container
+      cpu: "2"
+      # -- Memory request for the Sourcebot container
+      memory: 4Gi
+    limits:
+      # -- CPU limit for the Sourcebot container
+      cpu: "2"
+      # -- Memory limit for the Sourcebot container
+      memory: 4Gi
 
   # Liveness probe to check if the container is alive
   livenessProbe:
@@ -312,8 +333,8 @@ postgresql:
     existingSecret: ""
     # -- Keys in the existing secret
     secretKeys:
-      userPasswordKey: postgresql-password
-      adminPasswordKey: postgresql-password
+      userPasswordKey: password
+      adminPasswordKey: postgres-password
     # -- Database name
     database: sourcebot
     # -- Additional database connection arguments
@@ -324,6 +345,17 @@ postgresql:
     persistence:
       enabled: true
       size: 8Gi
+    resources:
+      requests:
+        # -- CPU request for the PostgreSQL container
+        cpu: "2"
+        # -- Memory request for the PostgreSQL container
+        memory: 4Gi
+      limits:
+        # -- CPU limit for the PostgreSQL container
+        cpu: "2"
+        # -- Memory limit for the PostgreSQL container
+        memory: 4Gi
 
 # Redis Configuration
 redis:
@@ -351,3 +383,17 @@ redis:
     existingSecretPasswordKey: redis-password
     # -- Redis database number
     database: 0
+
+  # Subchart specific settings (only applies when deploy is true)
+  primary:
+    resources:
+      requests:
+        # -- CPU request for the Redis container
+        cpu: "1"
+        # -- Memory request for the Redis container
+        memory: "1.5Gi"
+      limits:
+        # -- CPU limit for the Redis container
+        cpu: "1"
+        # -- Memory limit for the Redis container
+        memory: "1.5Gi"

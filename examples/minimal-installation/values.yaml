@@ -2,20 +2,12 @@
 
 # Sourcebot application configuration
 sourcebot:
-  # Sourcebot application configuration
-  config:
-    $schema: https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/v3/index.json
-    connections:
-      # Example: GitHub repositories
-      github-repos:
-        type: github
-        repos:
-          - sourcebot-dev/sourcebot
-
-  # Load secret environment variables
-  envFrom:
-    - secretRef:
-        name: sourcebot-env-secrets
+  authSecret:
+    existingSecret: sourcebot-secrets
+    existingSecretKey: authSecret
+  encryptionKey:
+    existingSecret: sourcebot-secrets
+    existingSecretKey: encryptionKey
 
 # PostgreSQL configuration
 postgresql:
