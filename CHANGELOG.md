@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added configurable deployment strategy support, allowing users to switch between `RollingUpdate` and `Recreate` strategies. [#82](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/82)
+
 ## [0.1.71] - 2026-04-09
 
 ### Added

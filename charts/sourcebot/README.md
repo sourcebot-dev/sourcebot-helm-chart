@@ -130,6 +130,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.startupProbe.httpGet.path | string | `"/api/health"` | Path to check |
 | sourcebot.startupProbe.httpGet.port | string | `"http"` | Port to check |
 | sourcebot.startupProbe.periodSeconds | int | `30` | Initial delay before the first probe |
+| sourcebot.strategy | object | `{"type":"RollingUpdate"}` | Deployment strategy configuration |
 | sourcebot.tolerations | list | `[]` | Set tolerations for pod scheduling See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
 
 ----------------------------------------------
