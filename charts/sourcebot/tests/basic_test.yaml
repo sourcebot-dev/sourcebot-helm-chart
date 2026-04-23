@@ -159,6 +159,31 @@ tests:
               claimName: my-existing-pvc
         template: deployment.yaml
 
+  - it: should always have keep resource policy annotation on PVC
+    values:
+      - ../values.lint.yaml
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/resource-policy"]
+          value: keep
+        template: pvc.yaml
+
+  - it: should merge custom annotations with helm resource policy on PVC
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.persistence.annotations:
+        custom.io/annotation: "my-value"
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/resource-policy"]
+          value: keep
+        template: pvc.yaml
+      - equal:
+          path: metadata.annotations["custom.io/annotation"]
+          value: my-value
+        template: pvc.yaml
+
   - it: should set service type correctly
     values:
       - ../values.lint.yaml
