@@ -1,5 +1,6 @@
 {{- if and .Values.sourcebot.persistence.enabled (not .Values.sourcebot.persistence.existingClaim) }}
-{{- $volumeName := printf "%s-%s" (include "sourcebot.fullname" .) "data" -}}
+{{- $pvcName := printf "%s-%s" (include "sourcebot.fullname" .) "data" -}}
+{{- $existingPvc := (lookup "v1" "PersistentVolumeClaim" $.Release.Namespace $pvcName) -}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -27,9 +28,9 @@ spec:
   {{- else }}
   storageClassName: {{ .Values.sourcebot.persistence.storageClass }}
   {{- end }}
-  {{- if (lookup "v1" "PersistentVolumeClaim" $.Release.Namespace $volumeName) }}
-  volumeName: {{ (lookup "v1" "PersistentVolumeClaim" $.Release.Namespace $volumeName).spec.volumeName }}
   {{- end }}
+  {{- if and $existingPvc $existingPvc.spec.volumeName }}
+  volumeName: {{ $existingPvc.spec.volumeName }}
   {{- end }}
 {{- end }}
 
