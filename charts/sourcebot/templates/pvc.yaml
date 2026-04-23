@@ -1,4 +1,5 @@
 {{- if and .Values.sourcebot.persistence.enabled (not .Values.sourcebot.persistence.existingClaim) }}
+{{- $volumeName := printf "%s-%s" (include "sourcebot.fullname" .) "data" -}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -7,10 +8,11 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "sourcebot.labels" . | nindent 4 }}
-  {{- with .Values.sourcebot.persistence.annotations }}
   annotations:
+    helm.sh/resource-policy: keep
+    {{- with .Values.sourcebot.persistence.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
   accessModes:
     {{- range .Values.sourcebot.persistence.accessModes }}
@@ -24,6 +26,9 @@ spec:
   storageClassName: ""
   {{- else }}
   storageClassName: {{ .Values.sourcebot.persistence.storageClass }}
+  {{- end }}
+  {{- if (lookup "v1" "PersistentVolumeClaim" $.Release.Namespace $volumeName) }}
+  volumeName: {{ (lookup "v1" "PersistentVolumeClaim" $.Release.Namespace $volumeName).spec.volumeName }}
   {{- end }}
   {{- end }}
 {{- end }}
