@@ -67,6 +67,28 @@ tests:
           value: Helm
         template: deployment.yaml
 
+  - it: should include root additional labels
+    values:
+      - ../values.lint.yaml
+    set:
+      additionalLabels.component: sourcebot
+    asserts:
+      - equal:
+          path: metadata.labels.component
+          value: sourcebot
+        template: deployment.yaml
+
+  - it: should include sourcebot additional labels
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.additionalLabels.component: sourcebot
+    asserts:
+      - equal:
+          path: metadata.labels.component
+          value: sourcebot
+        template: deployment.yaml
+
   - it: should use correct image when tag is specified
     values:
       - ../values.lint.yaml
@@ -183,4 +205,3 @@ tests:
       - isNotEmpty:
           path: data["config.json"]
         template: config.yaml
-
