@@ -19,6 +19,9 @@
         "imagePullSecrets": {
           "type": "array",
           "items": { "type": "string" }
+        },
+        "metadata": {
+          "type": "object"
         }
       }
     },
@@ -27,6 +30,9 @@
     },
     "fullnameOverride": {
       "type": "string"
+    },
+    "additionalLabels": {
+      "type": "object"
     },
     "sourcebot": {
       "type": "object",
