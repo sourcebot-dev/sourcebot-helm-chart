@@ -65,8 +65,8 @@ postgresql:
   auth:
     existingSecret: sourcebot-secrets
     secretKeys:
-      userPasswordKey: postgres-password
-      adminPasswordKey: postgres-password
+      userPasswordKey: postgresql-password
+      adminPasswordKey: postgresql-password
 
 redis:
   auth:
