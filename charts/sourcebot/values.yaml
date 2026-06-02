@@ -238,6 +238,13 @@ sourcebot:
     # -- Initial delay before the first probe
     periodSeconds: 30
 
+  # -- Container lifecycle hooks.
+  lifecycle: {}
+
+  # -- Grace period (seconds) Kubernetes waits between SIGTERM and SIGKILL on pod
+  # termination.
+  terminationGracePeriodSeconds: null
+
   # -- Define additional volumes
   # See: https://kubernetes.io/docs/concepts/storage/volumes/
   extraVolumes: []
