@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.86] - 2026-06-02
+
 ### Added
 - `sourcebot.lifecycle` and `sourcebot.terminationGracePeriodSeconds` values. [#110](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/110)
 
