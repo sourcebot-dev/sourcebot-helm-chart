@@ -167,6 +167,12 @@
         "startupProbe": {
           "type": "object"
         },
+        "lifecycle": {
+          "type": "object"
+        },
+        "terminationGracePeriodSeconds": {
+          "type": ["integer", "null"]
+        },
         "extraVolumes": {
           "type": "array"
         },

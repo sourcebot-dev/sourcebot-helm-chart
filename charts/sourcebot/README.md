@@ -87,6 +87,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.license.existingSecret | string | `""` | Use an existing secret for the license key |
 | sourcebot.license.existingSecretKey | string | `"key"` | Key in the existing secret that contains the license key |
 | sourcebot.license.value | string | `""` | License key value (or use existingSecret) |
+| sourcebot.lifecycle | object | `{}` | Container lifecycle hooks. |
 | sourcebot.livenessProbe.failureThreshold | int | `5` | Number of consecutive failures before marking the container as unhealthy |
 | sourcebot.livenessProbe.httpGet | object | `{"path":"/api/health","port":"http"}` | Http GET request to check if the container is alive |
 | sourcebot.livenessProbe.httpGet.path | string | `"/api/health"` | Path to check |
@@ -131,6 +132,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.startupProbe.httpGet.port | string | `"http"` | Port to check |
 | sourcebot.startupProbe.periodSeconds | int | `30` | Initial delay before the first probe |
 | sourcebot.strategy | object | `{"type":"RollingUpdate"}` | Deployment strategy configuration |
+| sourcebot.terminationGracePeriodSeconds | string | `nil` | Grace period (seconds) Kubernetes waits between SIGTERM and SIGKILL on pod termination. |
 | sourcebot.tolerations | list | `[]` | Set tolerations for pod scheduling See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
 
 ----------------------------------------------

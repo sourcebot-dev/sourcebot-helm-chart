@@ -30,6 +30,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "sourcebot.serviceAccountName" $ }}
+      {{- if ne $.Values.sourcebot.terminationGracePeriodSeconds nil }}
+      terminationGracePeriodSeconds: {{ $.Values.sourcebot.terminationGracePeriodSeconds }}
+      {{- end }}
       {{- if $.Values.sourcebot.podSecurityContext }}
       securityContext:
         {{- toYaml $.Values.sourcebot.podSecurityContext | nindent 8 }}
@@ -116,6 +119,10 @@ spec:
           {{- end }}
           {{- with $.Values.sourcebot.resources }}
           resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.sourcebot.lifecycle }}
+          lifecycle:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
