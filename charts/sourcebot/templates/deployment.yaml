@@ -30,8 +30,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "sourcebot.serviceAccountName" $ }}
-      {{- with $.Values.sourcebot.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ . }}
+      {{- if ne $.Values.sourcebot.terminationGracePeriodSeconds nil }}
+      terminationGracePeriodSeconds: {{ $.Values.sourcebot.terminationGracePeriodSeconds }}
       {{- end }}
       {{- if $.Values.sourcebot.podSecurityContext }}
       securityContext:
