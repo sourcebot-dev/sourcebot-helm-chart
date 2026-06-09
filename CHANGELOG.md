@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.89] - 2026-06-09
+
 ### Added
 - Support for root-level `additionalLabels` and `global.metadata` passthrough. [#103](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/103)
 
