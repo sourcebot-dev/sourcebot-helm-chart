@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for root-level `additionalLabels` and `global.metadata` passthrough. [#103](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/103)
+
+### Fixed
+- `sourcebot.additionalLabels` are now applied to resources (previously silently ignored). [#103](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/103)
+- Helm upgrade failure caused by the data PVC's immutable `volumeName`; the PVC now retains its bound volume and is preserved across upgrades (`helm.sh/resource-policy: keep`). [#102](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/102)
+
 ## [0.1.88] - 2026-06-04
 
 ### Changed
