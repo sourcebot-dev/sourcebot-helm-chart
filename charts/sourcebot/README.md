@@ -22,8 +22,10 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| additionalLabels | object | `{}` | Add extra labels to all resources |
 | fullnameOverride | string | `""` | Override the full name of the deployed resources, defaults to a combination of the release name and the name for the selector labels |
 | global.imagePullSecrets | list | `[]` | Global Docker registry secret names as an array |
+| global.metadata | object | `{}` | Global metadata for deployment tooling |
 | global.security.allowInsecureImages | bool | `true` | Allow insecure images to use bitnami legacy repository. Can be set to false if secure images are being used (Paid). |
 | nameOverride | string | `""` | Override the name for the selector labels, defaults to the chart name |
 | postgresql.auth.args | string | `""` | Additional database connection arguments |

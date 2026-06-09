@@ -40,7 +40,8 @@ helm.sh/chart: {{ include "sourcebot.chart" $ }}
 app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ $.Release.Service }}
-{{- with $.Values.additionalLabels }}
+{{- $additionalLabels := mergeOverwrite (dict) (default dict $.Values.sourcebot.additionalLabels) (default dict $.Values.additionalLabels) }}
+{{- with $additionalLabels }}
 {{ toYaml . }}
 {{- end }}
 {{- end }}

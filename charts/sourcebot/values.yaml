@@ -8,11 +8,18 @@ global:
   # -- Global Docker registry secret names as an array
   imagePullSecrets: []
 
+  # -- Global metadata for deployment tooling
+  metadata: {}
+
 # -- Override the name for the selector labels, defaults to the chart name
 nameOverride: ""
 
 # -- Override the full name of the deployed resources, defaults to a combination of the release name and the name for the selector labels
 fullnameOverride: ""
+
+# -- Add extra labels to all resources
+additionalLabels: {}
+# team: sourcebot
 
 # Core Sourcebot Configuration
 sourcebot:
