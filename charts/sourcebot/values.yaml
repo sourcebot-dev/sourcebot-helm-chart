@@ -108,7 +108,6 @@ sourcebot:
     #     - sourcebot/sourcebot
     settings: {}
     # reindexIntervalMs: 86400000
-    # enablePublicAccess: true
 
   # ServiceAccount configuration
   serviceAccount:
