@@ -79,6 +79,7 @@ redis:
 helm repo add sourcebot https://sourcebot-dev.github.io/sourcebot-helm-chart
 helm repo update
 helm install sourcebot sourcebot/sourcebot \
+  --namespace sourcebot --create-namespace \
   -f values.yaml \
   --set-json "sourcebot.config=$(cat config.json)"
 ```
@@ -88,6 +89,7 @@ helm install sourcebot sourcebot/sourcebot \
 ```bash
 helm repo update
 helm upgrade sourcebot sourcebot/sourcebot \
+  --namespace sourcebot \
   -f values.yaml \
   --set-json "sourcebot.config=$(cat config.json)"
 ```
@@ -394,7 +396,7 @@ sourcebot:
 To uninstall/delete the `sourcebot` deployment:
 
 ```bash
-helm uninstall sourcebot
+helm uninstall sourcebot --namespace sourcebot
 ```
 
 This removes all Kubernetes components associated with the chart but **preserves PersistentVolumeClaims (PVCs) by default**. This includes:
@@ -405,5 +407,10 @@ This removes all Kubernetes components associated with the chart but **preserves
 To also remove all PVCs (⚠️ **this will delete all your data**):
 
 ```bash
+<<<<<<< Updated upstream
 kubectl delete pvc -l app.kubernetes.io/instance=sourcebot
 ```
+=======
+kubectl delete pvc -l app.kubernetes.io/instance=sourcebot --namespace sourcebot
+```
+>>>>>>> Stashed changes
