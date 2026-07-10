@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.93] - 2026-07-10
+
+### Changed
+- Bumped Sourcebot to v5.1.0. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.0)
+
 ## [0.1.92] - 2026-06-18
 
 ### Changed
