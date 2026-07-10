@@ -33,7 +33,7 @@ sourcebot:
   # Image configuration
   image:
     # -- Container image repository
-    repository: ghcr.io/sourcebot-dev/sourcebot
+    repository: docker.sourcebot.dev/sourcebot-dev/sourcebot
     # -- Container image tag. Falls back to appVersion if not set.
     tag: ""
     # -- Container image digest (used instead of tag if set)

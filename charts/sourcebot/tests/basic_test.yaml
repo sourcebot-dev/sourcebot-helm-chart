@@ -97,7 +97,7 @@ tests:
     asserts:
       - matchRegex:
           path: spec.template.spec.containers[0].image
-          pattern: "ghcr.io/sourcebot-dev/sourcebot:v1.2.3$"
+          pattern: "docker.sourcebot.dev/sourcebot-dev/sourcebot:v1.2.3$"
         template: deployment.yaml
 
   - it: should use digest when specified
@@ -108,7 +108,7 @@ tests:
     asserts:
       - matchRegex:
           path: spec.template.spec.containers[0].image
-          pattern: "ghcr.io/sourcebot-dev/sourcebot@sha256:abcdef123456$"
+          pattern: "docker.sourcebot.dev/sourcebot-dev/sourcebot@sha256:abcdef123456$"
         template: deployment.yaml
 
   - it: should set replica count

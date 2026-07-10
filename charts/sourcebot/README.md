@@ -78,7 +78,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.image.digest | string | `""` | Container image digest (used instead of tag if set) |
 | sourcebot.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | sourcebot.image.pullSecrets | list | `[]` | Configure image pull secrets for private registries |
-| sourcebot.image.repository | string | `"ghcr.io/sourcebot-dev/sourcebot"` | Container image repository |
+| sourcebot.image.repository | string | `"docker.sourcebot.dev/sourcebot-dev/sourcebot"` | Container image repository |
 | sourcebot.image.tag | string | `""` | Container image tag. Falls back to appVersion if not set. |
 | sourcebot.ingress.annotations | object | `{}` | Ingress annotations |
 | sourcebot.ingress.className | string | `""` | Ingress class name |
