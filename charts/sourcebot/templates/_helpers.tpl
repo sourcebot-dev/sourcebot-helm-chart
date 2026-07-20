@@ -122,9 +122,7 @@ These will be assembled into DATABASE_URL by the entrypoint.sh script
 */}}
 {{- define "sourcebot.databaseEnv" -}}
 - name: DATABASE_HOST
-  value: {{ include "sourcebot.postgresql.hostname" . | quote }}
-- name: DATABASE_PORT
-  value: {{ .Values.postgresql.port | quote }}
+  value: {{ printf "%s:%v" (include "sourcebot.postgresql.hostname" .) .Values.postgresql.port | quote }}
 - name: DATABASE_USERNAME
   value: {{ .Values.postgresql.auth.username | quote }}
 - name: DATABASE_PASSWORD
