@@ -90,6 +90,18 @@ Return PostgreSQL hostname
 {{- end }}
 
 {{/*
+Return PostgreSQL address, preserving a port already included in the hostname
+*/}}
+{{- define "sourcebot.postgresql.address" -}}
+{{- $hostname := include "sourcebot.postgresql.hostname" . -}}
+{{- if regexMatch `^([^:]+|\[[^]]+\]):[0-9]+$` $hostname -}}
+{{- $hostname -}}
+{{- else -}}
+{{- printf "%s:%v" $hostname .Values.postgresql.port -}}
+{{- end -}}
+{{- end }}
+
+{{/*
 Return Redis hostname
 */}}
 {{- define "sourcebot.redis.hostname" -}}
@@ -122,9 +134,7 @@ These will be assembled into DATABASE_URL by the entrypoint.sh script
 */}}
 {{- define "sourcebot.databaseEnv" -}}
 - name: DATABASE_HOST
-  value: {{ include "sourcebot.postgresql.hostname" . | quote }}
-- name: DATABASE_PORT
-  value: {{ .Values.postgresql.port | quote }}
+  value: {{ include "sourcebot.postgresql.address" . | quote }}
 - name: DATABASE_USERNAME
   value: {{ .Values.postgresql.auth.username | quote }}
 - name: DATABASE_PASSWORD

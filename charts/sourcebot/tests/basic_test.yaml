@@ -122,6 +122,56 @@ tests:
           value: 3
         template: deployment.yaml
 
+  - it: should include the PostgreSQL port in the bundled database host
+    values:
+      - ../values.lint.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_HOST
+            value: RELEASE-NAME-sourcebot-postgresql:5432
+        template: deployment.yaml
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_PORT
+        template: deployment.yaml
+
+  - it: should include a custom PostgreSQL port in the external database host
+    values:
+      - ../values.lint.yaml
+    set:
+      postgresql.deploy: false
+      postgresql.host: db.example.test
+      postgresql.port: 6543
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_HOST
+            value: db.example.test:6543
+        template: deployment.yaml
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_PORT
+        template: deployment.yaml
+
+  - it: should preserve a port already included in the external database host
+    values:
+      - ../values.lint.yaml
+    set:
+      postgresql.deploy: false
+      postgresql.host: db.example.test:6543
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_HOST
+            value: db.example.test:6543
+        template: deployment.yaml
+
   - it: should mount persistence volume when enabled
     values:
       - ../values.lint.yaml
