@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- PostgreSQL connections now respect `postgresql.port`, while preserving ports already included in `postgresql.host`. [#123](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/123)
+
 ## [0.1.95] - 2026-07-16
 
 ### Changed
