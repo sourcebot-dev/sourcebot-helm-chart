@@ -200,6 +200,9 @@
         "tolerations": {
           "type": "array"
         },
+        "hostAliases": {
+          "type": "array"
+        },
         "affinity": {
           "type": "object"
         },
