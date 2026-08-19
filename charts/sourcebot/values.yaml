@@ -297,6 +297,13 @@ sourcebot:
   #   operator: Equal
   #   value: "value"
 
+  # -- Set host aliases to inject entries into the pod's /etc/hosts file
+  # See: https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/
+  hostAliases: []
+  # - ip: "10.0.0.10"
+  #   hostnames:
+  #     - "gitlab.internal.example.com"
+
   # -- Set affinity rules for pod scheduling
   # Defaults to soft anti-affinity if not set
   # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
