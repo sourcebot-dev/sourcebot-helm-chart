@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bumped Sourcebot to v5.1.8. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.8)
 
+### Added
+- `sourcebot.hostAliases` value for injecting entries into the pod's `/etc/hosts`. [131](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/131)
+
 ## [0.1.101] - 2026-08-13
 
 ### Changed

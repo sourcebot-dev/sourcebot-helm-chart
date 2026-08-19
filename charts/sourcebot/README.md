@@ -75,6 +75,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.envFrom | list | `[]` | Load environment variables from ConfigMaps and Secrets This is useful for injecting multiple environment variables from external secret management systems |
 | sourcebot.extraVolumeMounts | list | `[]` | Define volume mounts for the container See: https://kubernetes.io/docs/concepts/storage/volumes/ |
 | sourcebot.extraVolumes | list | `[]` | Define additional volumes See: https://kubernetes.io/docs/concepts/storage/volumes/ |
+| sourcebot.hostAliases | list | `[]` | Set host aliases to inject entries into the pod's /etc/hosts file See: https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/ |
 | sourcebot.image.digest | string | `""` | Container image digest (used instead of tag if set) |
 | sourcebot.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | sourcebot.image.pullSecrets | list | `[]` | Configure image pull secrets for private registries |
