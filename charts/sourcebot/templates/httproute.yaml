@@ -1,4 +1,7 @@
 {{- if $.Values.sourcebot.httpRoute.enabled -}}
+{{- if not $.Values.sourcebot.httpRoute.parentRefs -}}
+{{- fail "sourcebot.httpRoute.parentRefs is required when sourcebot.httpRoute.enabled is true. An HTTPRoute without parentRefs is not attached to any Gateway and silently receives no traffic." -}}
+{{- end -}}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute

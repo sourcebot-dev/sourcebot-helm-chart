@@ -1,0 +1,214 @@
+suite: test Gateway API HTTPRoute
+templates:
+  - httproute.yaml
+  - deployment.yaml
+  - config.yaml
+tests:
+  - it: should not render an HTTPRoute by default
+    values:
+      - ../values.lint.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: httproute.yaml
+
+  - it: should render an HTTPRoute when enabled
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+          namespace: gateway-system
+          sectionName: https
+      sourcebot.httpRoute.hostnames:
+        - chart-example.local
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: httproute.yaml
+      - isKind:
+          of: HTTPRoute
+        template: httproute.yaml
+      - isAPIVersion:
+          of: gateway.networking.k8s.io/v1
+        template: httproute.yaml
+      - equal:
+          path: spec.parentRefs[0]
+          value:
+            name: my-gateway
+            namespace: gateway-system
+            sectionName: https
+        template: httproute.yaml
+      - equal:
+          path: spec.hostnames[0]
+          value: chart-example.local
+        template: httproute.yaml
+
+  - it: should generate a default rule pointing at the Sourcebot service
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+    asserts:
+      - lengthEqual:
+          path: spec.rules
+          count: 1
+        template: httproute.yaml
+      - equal:
+          path: spec.rules[0].matches[0].path
+          value:
+            type: PathPrefix
+            value: /
+        template: httproute.yaml
+      - equal:
+          path: spec.rules[0].backendRefs[0]
+          value:
+            name: RELEASE-NAME-sourcebot
+            port: 3000
+        template: httproute.yaml
+
+  - it: should use custom rules when provided
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+      sourcebot.httpRoute.rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /api
+          backendRefs:
+            - name: custom-backend
+              port: 8080
+    asserts:
+      - lengthEqual:
+          path: spec.rules
+          count: 1
+        template: httproute.yaml
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: custom-backend
+        template: httproute.yaml
+
+  - it: should set HTTPRoute annotations
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+      sourcebot.httpRoute.annotations:
+        custom.io/annotation: my-value
+    asserts:
+      - equal:
+          path: metadata.annotations["custom.io/annotation"]
+          value: my-value
+        template: httproute.yaml
+
+  - it: should fail when enabled without parentRefs
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: sourcebot.httpRoute.parentRefs is required when sourcebot.httpRoute.enabled is true. An HTTPRoute without parentRefs is not attached to any Gateway and silently receives no traffic.
+        template: httproute.yaml
+
+  - it: should derive AUTH_URL from the HTTPRoute hostname when ingress is disabled
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+      sourcebot.httpRoute.hostnames:
+        - chart-example.local
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AUTH_URL
+            value: https://chart-example.local
+          count: 1
+        template: deployment.yaml
+
+  - it: should skip wildcard hostnames when deriving AUTH_URL
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+      sourcebot.httpRoute.hostnames:
+        - "*.chart-example.local"
+        - sourcebot.chart-example.local
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AUTH_URL
+            value: https://sourcebot.chart-example.local
+          count: 1
+        template: deployment.yaml
+
+  - it: should not set AUTH_URL when every hostname is a wildcard
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+      sourcebot.httpRoute.hostnames:
+        - "*.chart-example.local"
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AUTH_URL
+        template: deployment.yaml
+
+  - it: should prefer the ingress host for AUTH_URL when both are enabled
+    values:
+      - ../values.lint.yaml
+    set:
+      sourcebot.ingress.enabled: true
+      sourcebot.ingress.hosts:
+        - host: ingress.chart-example.local
+          paths:
+            - path: /
+              pathType: Prefix
+      sourcebot.httpRoute.enabled: true
+      sourcebot.httpRoute.parentRefs:
+        - name: my-gateway
+      sourcebot.httpRoute.hostnames:
+        - route.chart-example.local
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AUTH_URL
+            value: https://ingress.chart-example.local
+          count: 1
+        template: deployment.yaml
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AUTH_URL
+            value: https://route.chart-example.local
+        template: deployment.yaml
+
+  - it: should not set AUTH_URL when neither ingress nor httpRoute is enabled
+    values:
+      - ../values.lint.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AUTH_URL
+        template: deployment.yaml

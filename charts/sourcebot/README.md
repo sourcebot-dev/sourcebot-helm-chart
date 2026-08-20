@@ -78,7 +78,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.hostAliases | list | `[]` | Set host aliases to inject entries into the pod's /etc/hosts file See: https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/ |
 | sourcebot.httpRoute.annotations | object | `{}` | HTTPRoute annotations |
 | sourcebot.httpRoute.enabled | bool | `false` | Enable or disable the HTTPRoute. Requires the Gateway API CRDs (`gateway.networking.k8s.io/v1`) to be installed in the cluster. |
-| sourcebot.httpRoute.hostnames | list | `[]` | Hostnames to match. The first hostname is used to derive `AUTH_URL` when ingress is disabled. |
+| sourcebot.httpRoute.hostnames | list | `[]` | Hostnames to match. When ingress is disabled, the first non-wildcard hostname is used to derive `AUTH_URL`. If every hostname is a wildcard, set `AUTH_URL` explicitly via `sourcebot.additionalEnv`. |
 | sourcebot.httpRoute.parentRefs | list | `[]` | Gateways to attach this route to. Required when the HTTPRoute is enabled. |
 | sourcebot.httpRoute.rules | list | `[]` | Routing rules. When empty, a single rule forwarding all traffic to the Sourcebot service is generated. |
 | sourcebot.image.digest | string | `""` | Container image digest (used instead of tag if set) |

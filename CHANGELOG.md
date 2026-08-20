@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `sourcebot.httpRoute` values for exposing Sourcebot through a Gateway API `HTTPRoute`. `AUTH_URL` is now also derived from `sourcebot.httpRoute.hostnames` when ingress is disabled.
 
+### Fixed
+- `AUTH_URL` derivation no longer picks a wildcard hostname, which produced an unusable URL.
+
 ## [0.1.102] - 2026-08-19
 
 ### Changed

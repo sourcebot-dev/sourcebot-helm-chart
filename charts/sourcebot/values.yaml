@@ -192,7 +192,7 @@ sourcebot:
     # - name: my-gateway
     #   namespace: gateway-system
     #   sectionName: https
-    # -- Hostnames to match. The first hostname is used to derive `AUTH_URL` when ingress is disabled.
+    # -- Hostnames to match. When ingress is disabled, the first non-wildcard hostname is used to derive `AUTH_URL`. If every hostname is a wildcard, set `AUTH_URL` explicitly via `sourcebot.additionalEnv`.
     hostnames: []
     # - chart-example.local
     # -- Routing rules. When empty, a single rule forwarding all traffic to the Sourcebot service is generated.
