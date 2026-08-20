@@ -63,6 +63,9 @@ spec:
             {{- if and $.Values.sourcebot.ingress.enabled (gt (len $.Values.sourcebot.ingress.hosts) 0) }}
             - name: AUTH_URL
               value: {{ (index $.Values.sourcebot.ingress.hosts 0).host | printf "https://%s" }}
+            {{- else if and $.Values.sourcebot.httpRoute.enabled (gt (len $.Values.sourcebot.httpRoute.hostnames) 0) }}
+            - name: AUTH_URL
+              value: {{ index $.Values.sourcebot.httpRoute.hostnames 0 | printf "https://%s" }}
             {{- end }}
             - name: CONFIG_PATH
               value: /etc/sourcebot/config.json

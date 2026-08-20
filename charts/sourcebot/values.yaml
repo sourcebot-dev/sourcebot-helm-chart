@@ -180,6 +180,31 @@ sourcebot:
     #     - chart-example.local
     #   secretName: chart-example-tls
 
+  # Gateway API HTTPRoute configuration. TLS is terminated by the Gateway
+  # listener, so there is no TLS section here.
+  httpRoute:
+    # -- Enable or disable the HTTPRoute. Requires the Gateway API CRDs (`gateway.networking.k8s.io/v1`) to be installed in the cluster.
+    enabled: false
+    # -- HTTPRoute annotations
+    annotations: {}
+    # -- Gateways to attach this route to. Required when the HTTPRoute is enabled.
+    parentRefs: []
+    # - name: my-gateway
+    #   namespace: gateway-system
+    #   sectionName: https
+    # -- Hostnames to match. The first hostname is used to derive `AUTH_URL` when ingress is disabled.
+    hostnames: []
+    # - chart-example.local
+    # -- Routing rules. When empty, a single rule forwarding all traffic to the Sourcebot service is generated.
+    rules: []
+    # - matches:
+    #     - path:
+    #         type: PathPrefix
+    #         value: /
+    #   backendRefs:
+    #     - name: sourcebot
+    #       port: 3000
+
   # -- Configure init containers to run before the main container
   initContainers: []
   # - name: sleeper
