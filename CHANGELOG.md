@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `AUTH_URL` derivation no longer picks a wildcard hostname, which produced an unusable URL.
 
+## [0.1.103] - 2026-08-22
+
+### Changed
+- Bumped Sourcebot to v5.1.9. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.9)
+
 ## [0.1.102] - 2026-08-19
 
 ### Changed
