@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- PostgreSQL and Redis metrics exporters now use Bitnami Legacy images when enabled. [#136](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/136)
+
 ## [0.1.104] - 2026-08-27
 
 ### Changed
