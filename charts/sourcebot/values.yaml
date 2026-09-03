@@ -343,6 +343,11 @@ postgresql:
     # -- Overwrite default repository of helm chart to point to non-paid bitnami images
     repository: bitnamilegacy/postgresql
 
+  metrics:
+    image:
+      # -- Overwrite default metrics exporter repository to point to non-paid bitnami images
+      repository: bitnamilegacy/postgres-exporter
+
   # Authentication configuration
   auth:
     # -- Username to connect to PostgreSQL
@@ -390,6 +395,11 @@ redis:
   image:
     # -- Overwrite default repository of helm chart to point to non-paid bitnami images
     repository: bitnamilegacy/valkey
+
+  metrics:
+    image:
+      # -- Overwrite default metrics exporter repository to point to non-paid bitnami images
+      repository: bitnamilegacy/redis-exporter
 
   # Authentication configuration
   auth:
