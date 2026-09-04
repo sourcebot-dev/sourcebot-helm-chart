@@ -37,6 +37,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | postgresql.deploy | bool | `true` | Deploy PostgreSQL subchart. Set to false to use an external PostgreSQL instance. |
 | postgresql.host | string | `""` | PostgreSQL host (only used if deploy is false) |
 | postgresql.image.repository | string | `"bitnamilegacy/postgresql"` | Overwrite default repository of helm chart to point to non-paid bitnami images |
+| postgresql.metrics.image.repository | string | `"bitnamilegacy/postgres-exporter"` | Overwrite default metrics exporter repository to point to non-paid bitnami images |
 | postgresql.port | int | `5432` | PostgreSQL port |
 | postgresql.primary.persistence.enabled | bool | `true` |  |
 | postgresql.primary.persistence.size | string | `"8Gi"` |  |
@@ -52,6 +53,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | redis.deploy | bool | `true` | Deploy Redis/Valkey subchart. Set to false to use an external Redis instance. |
 | redis.host | string | `""` | Redis host (only used if deploy is false) |
 | redis.image.repository | string | `"bitnamilegacy/valkey"` | Overwrite default repository of helm chart to point to non-paid bitnami images |
+| redis.metrics.image.repository | string | `"bitnamilegacy/redis-exporter"` | Overwrite default metrics exporter repository to point to non-paid bitnami images |
 | redis.port | int | `6379` | Redis port |
 | redis.primary.resources.limits.cpu | string | `"1"` | CPU limit for the Redis container |
 | redis.primary.resources.limits.memory | string | `"1.5Gi"` | Memory limit for the Redis container |
