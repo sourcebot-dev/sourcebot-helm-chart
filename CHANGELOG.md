@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.105] - 2026-09-10
+
+### Changed
+- Bumped Sourcebot to v5.1.11. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.11)
+
 ### Fixed
 - PostgreSQL and Redis metrics exporters now use Bitnami Legacy images when enabled. [#136](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/136)
 
