@@ -5,9 +5,9 @@
 ### Prerequisites
 
 - [Helm 3.x](https://helm.sh/docs/intro/install/)
-- A local Kubernetes cluster (e.g., [minikube](https://minikube.sigs.k8s.io/docs/start/)). The default resource requests require at least 12GB of memory. For minikube, configure this before creating your cluster:
+- A local Kubernetes cluster (e.g., [minikube](https://minikube.sigs.k8s.io/docs/start/)). The default resource requests require at least 16GB of memory. For minikube, configure this before creating your cluster:
   ```bash
-  minikube config set memory 12288  # 12GB
+  minikube config set memory 16384  # 16GB
   ```
 
 ### Building Dependencies

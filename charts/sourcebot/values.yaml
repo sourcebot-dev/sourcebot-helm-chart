@@ -419,11 +419,11 @@ redis:
     resources:
       requests:
         # -- CPU request for the Redis container
-        cpu: "1"
+        cpu: "2"
         # -- Memory request for the Redis container
-        memory: "1.5Gi"
+        memory: "4Gi"
       limits:
         # -- CPU limit for the Redis container
-        cpu: "1"
+        cpu: "2"
         # -- Memory limit for the Redis container
-        memory: "1.5Gi"
+        memory: "4Gi"
