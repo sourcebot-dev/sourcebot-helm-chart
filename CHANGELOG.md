@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Bumped default Redis resource requests and limits to 2 CPU / 4Gi memory. [#143](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/143)
+
 ## [0.1.109] - 2026-09-29
 
 ### Changed

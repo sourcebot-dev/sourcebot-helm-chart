@@ -55,10 +55,10 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | redis.image.repository | string | `"bitnamilegacy/valkey"` | Overwrite default repository of helm chart to point to non-paid bitnami images |
 | redis.metrics.image.repository | string | `"bitnamilegacy/redis-exporter"` | Overwrite default metrics exporter repository to point to non-paid bitnami images |
 | redis.port | int | `6379` | Redis port |
-| redis.primary.resources.limits.cpu | string | `"1"` | CPU limit for the Redis container |
-| redis.primary.resources.limits.memory | string | `"1.5Gi"` | Memory limit for the Redis container |
-| redis.primary.resources.requests.cpu | string | `"1"` | CPU request for the Redis container |
-| redis.primary.resources.requests.memory | string | `"1.5Gi"` | Memory request for the Redis container |
+| redis.primary.resources.limits.cpu | string | `"2"` | CPU limit for the Redis container |
+| redis.primary.resources.limits.memory | string | `"4Gi"` | Memory limit for the Redis container |
+| redis.primary.resources.requests.cpu | string | `"2"` | CPU request for the Redis container |
+| redis.primary.resources.requests.memory | string | `"4Gi"` | Memory request for the Redis container |
 | sourcebot.additionalEnv | list | `[]` | Set additional environment variables |
 | sourcebot.additionalEnvSecrets | list | `[]` | Set environment variables from Kubernetes secrets |
 | sourcebot.additionalLabels | object | `{}` | Add extra labels to all resources |
