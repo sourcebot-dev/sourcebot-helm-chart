@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.110] - 2026-10-09
+
+### Changed
+- Bumped Sourcebot to v5.1.16. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.16)
+
 ### Changed
 - Bumped default Redis resource requests and limits to 2 CPU / 4Gi memory. [#143](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/143)
 
