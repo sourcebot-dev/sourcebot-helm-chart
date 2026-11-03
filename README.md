@@ -264,7 +264,7 @@ Stores cloned repositories and search indexes. Enabled by default. New installs 
 sourcebot:
   persistence:
     enabled: true    # Default
-    size: 100Gi      # Default for new installs when unset. Increase for large or many repositories
+    size: ""         # Default. New installs get 100Gi, existing volumes keep their size. Set e.g. 250Gi to resize.
     storageClass: "" # Uses cluster default
     accessModes:
       - ReadWriteOnce
