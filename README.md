@@ -258,13 +258,13 @@ Each component has its own persistent volume for storing data across pod restart
 
 ### Sourcebot
 
-Stores cloned repositories and search indexes. Enabled by default with a 10Gi volume.
+Stores cloned repositories and search indexes. Enabled by default. New installs get a 100Gi volume. On upgrade, an existing volume keeps its current size unless you set `size` explicitly. See the [sizing guide](https://docs.sourcebot.dev/docs/deployment/sizing-guide) to choose a size for your repo count.
 
 ```yaml
 sourcebot:
   persistence:
     enabled: true    # Default
-    size: 10Gi       # Increase for large or many repositories
+    size: 100Gi      # Default for new installs when unset. Increase for large or many repositories
     storageClass: "" # Uses cluster default
     accessModes:
       - ReadWriteOnce
