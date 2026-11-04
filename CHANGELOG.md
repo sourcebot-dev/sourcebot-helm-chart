@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bumped Sourcebot to v6.0.8. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.8)
 - Changed the default `sourcebot.image.repository` to `ghcr.io/sourcebot-dev/sourcebot`, fixing `unauthorized` pull errors with CRI-O (OpenShift) and Podman. [#153](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/153)
+- Raised the default Sourcebot data volume size (`sourcebot.persistence.size`) from 10Gi to 100Gi for new installs. Existing volumes keep their current size on upgrade unless `size` is set explicitly, so the upgrade does not fail on storage classes that can't resize volumes. Argo CD renders the chart without cluster access, so it can't see an existing volume. Argo CD users relying on the old default should set `sourcebot.persistence.size: 10Gi` to keep their current volume, or set a larger size if their storage class can resize volumes. [#154](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/154)
 
 ## [0.1.118] - 2026-10-31
 
