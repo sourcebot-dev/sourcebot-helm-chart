@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.119] - 2026-11-04
+
+### Changed
+- Bumped Sourcebot to v6.0.8. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.8)
+
 ### Changed
 - Changed the default `sourcebot.image.repository` to `ghcr.io/sourcebot-dev/sourcebot`, fixing `unauthorized` pull errors with CRI-O (OpenShift) and Podman. [#153](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/153)
 
