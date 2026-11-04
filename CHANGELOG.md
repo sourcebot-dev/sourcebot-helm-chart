@@ -13,6 +13,93 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `AUTH_URL` derivation no longer picks a wildcard hostname, which produced an unusable URL.
 
+## [0.1.119] - 2026-11-04
+
+### Changed
+- Bumped Sourcebot to v6.0.8. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.8)
+- Changed the default `sourcebot.image.repository` to `ghcr.io/sourcebot-dev/sourcebot`, fixing `unauthorized` pull errors with CRI-O (OpenShift) and Podman. [#153](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/153)
+
+## [0.1.118] - 2026-10-31
+
+### Changed
+- Bumped Sourcebot to v6.0.7. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.7)
+
+## [0.1.117] - 2026-10-29
+
+### Changed
+- Bumped Sourcebot to v6.0.6. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.6)
+
+## [0.1.116] - 2026-10-28
+
+### Changed
+- Bumped Sourcebot to v6.0.5. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.5)
+
+## [0.1.115] - 2026-10-26
+
+### Changed
+- Bumped Sourcebot to v6.0.4. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.4)
+
+## [0.1.114] - 2026-10-22
+
+### Changed
+- Bumped Sourcebot to v6.0.3. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.3)
+
+## [0.1.113] - 2026-10-20
+
+### Changed
+- Bumped Sourcebot to v6.0.2. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.2)
+
+## [0.1.112] - 2026-10-16
+
+### Changed
+- Bumped Sourcebot to v6.0.1. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.1)
+
+## [0.1.111] - 2026-10-10
+
+### Changed
+- Bumped Sourcebot to v6.0.0. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v6.0.0)
+
+## [0.1.110] - 2026-10-09
+
+### Changed
+- Bumped Sourcebot to v5.1.16. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.16)
+
+### Changed
+- Bumped default Redis resource requests and limits to 2 CPU / 4Gi memory. [#143](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/143)
+
+## [0.1.109] - 2026-09-29
+
+### Changed
+- Bumped Sourcebot to v5.1.15. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.15)
+
+## [0.1.108] - 2026-09-17
+
+### Changed
+- Bumped Sourcebot to v5.1.14. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.14)
+
+## [0.1.107] - 2026-09-12
+
+### Changed
+- Bumped Sourcebot to v5.1.13. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.13)
+
+## [0.1.106] - 2026-09-10
+
+### Changed
+- Bumped Sourcebot to v5.1.12. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.12)
+
+## [0.1.105] - 2026-09-10
+
+### Changed
+- Bumped Sourcebot to v5.1.11. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.11)
+
+### Fixed
+- PostgreSQL and Redis metrics exporters now use Bitnami Legacy images when enabled. [#136](https://github.com/sourcebot-dev/sourcebot-helm-chart/pull/136)
+
+## [0.1.104] - 2026-08-27
+
+### Changed
+- Bumped Sourcebot to v5.1.10. [Release notes](https://github.com/sourcebot-dev/sourcebot/releases/tag/v5.1.10)
+
 ## [0.1.103] - 2026-08-22
 
 ### Changed

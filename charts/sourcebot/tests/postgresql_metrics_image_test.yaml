@@ -1,0 +1,14 @@
+suite: test bundled PostgreSQL metrics image
+templates:
+  - charts/postgresql/templates/primary/statefulset.yaml
+tests:
+  - it: should use the legacy exporter image when metrics are enabled
+    values:
+      - ../values.lint.yaml
+    set:
+      postgresql.metrics.enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: docker.io/bitnamilegacy/postgres-exporter:0.16.0-debian-12-r8
+        template: charts/postgresql/templates/primary/statefulset.yaml

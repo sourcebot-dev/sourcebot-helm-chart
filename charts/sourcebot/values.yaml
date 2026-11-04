@@ -33,7 +33,7 @@ sourcebot:
   # Image configuration
   image:
     # -- Container image repository
-    repository: docker.sourcebot.dev/sourcebot-dev/sourcebot
+    repository: ghcr.io/sourcebot-dev/sourcebot
     # -- Container image tag. Falls back to appVersion if not set.
     tag: ""
     # -- Container image digest (used instead of tag if set)
@@ -368,6 +368,11 @@ postgresql:
     # -- Overwrite default repository of helm chart to point to non-paid bitnami images
     repository: bitnamilegacy/postgresql
 
+  metrics:
+    image:
+      # -- Overwrite default metrics exporter repository to point to non-paid bitnami images
+      repository: bitnamilegacy/postgres-exporter
+
   # Authentication configuration
   auth:
     # -- Username to connect to PostgreSQL
@@ -416,6 +421,11 @@ redis:
     # -- Overwrite default repository of helm chart to point to non-paid bitnami images
     repository: bitnamilegacy/valkey
 
+  metrics:
+    image:
+      # -- Overwrite default metrics exporter repository to point to non-paid bitnami images
+      repository: bitnamilegacy/redis-exporter
+
   # Authentication configuration
   auth:
     # -- Username for Redis connection
@@ -434,11 +444,11 @@ redis:
     resources:
       requests:
         # -- CPU request for the Redis container
-        cpu: "1"
+        cpu: "2"
         # -- Memory request for the Redis container
-        memory: "1.5Gi"
+        memory: "4Gi"
       limits:
         # -- CPU limit for the Redis container
-        cpu: "1"
+        cpu: "2"
         # -- Memory limit for the Redis container
-        memory: "1.5Gi"
+        memory: "4Gi"

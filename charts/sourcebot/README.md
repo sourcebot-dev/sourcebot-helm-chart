@@ -1,6 +1,6 @@
 # sourcebot
 
-![Version: 0.1.103](https://img.shields.io/badge/Version-0.1.103-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v5.1.9](https://img.shields.io/badge/AppVersion-v5.1.9-informational?style=flat-square)
+![Version: 0.1.119](https://img.shields.io/badge/Version-0.1.119-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.0.8](https://img.shields.io/badge/AppVersion-v6.0.8-informational?style=flat-square)
 
 Sourcebot is a self-hosted tool that helps you understand your codebase.
 
@@ -37,6 +37,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | postgresql.deploy | bool | `true` | Deploy PostgreSQL subchart. Set to false to use an external PostgreSQL instance. |
 | postgresql.host | string | `""` | PostgreSQL host (only used if deploy is false) |
 | postgresql.image.repository | string | `"bitnamilegacy/postgresql"` | Overwrite default repository of helm chart to point to non-paid bitnami images |
+| postgresql.metrics.image.repository | string | `"bitnamilegacy/postgres-exporter"` | Overwrite default metrics exporter repository to point to non-paid bitnami images |
 | postgresql.port | int | `5432` | PostgreSQL port |
 | postgresql.primary.persistence.enabled | bool | `true` |  |
 | postgresql.primary.persistence.size | string | `"8Gi"` |  |
@@ -52,11 +53,12 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | redis.deploy | bool | `true` | Deploy Redis/Valkey subchart. Set to false to use an external Redis instance. |
 | redis.host | string | `""` | Redis host (only used if deploy is false) |
 | redis.image.repository | string | `"bitnamilegacy/valkey"` | Overwrite default repository of helm chart to point to non-paid bitnami images |
+| redis.metrics.image.repository | string | `"bitnamilegacy/redis-exporter"` | Overwrite default metrics exporter repository to point to non-paid bitnami images |
 | redis.port | int | `6379` | Redis port |
-| redis.primary.resources.limits.cpu | string | `"1"` | CPU limit for the Redis container |
-| redis.primary.resources.limits.memory | string | `"1.5Gi"` | Memory limit for the Redis container |
-| redis.primary.resources.requests.cpu | string | `"1"` | CPU request for the Redis container |
-| redis.primary.resources.requests.memory | string | `"1.5Gi"` | Memory request for the Redis container |
+| redis.primary.resources.limits.cpu | string | `"2"` | CPU limit for the Redis container |
+| redis.primary.resources.limits.memory | string | `"4Gi"` | Memory limit for the Redis container |
+| redis.primary.resources.requests.cpu | string | `"2"` | CPU request for the Redis container |
+| redis.primary.resources.requests.memory | string | `"4Gi"` | Memory request for the Redis container |
 | sourcebot.additionalEnv | list | `[]` | Set additional environment variables |
 | sourcebot.additionalEnvSecrets | list | `[]` | Set environment variables from Kubernetes secrets |
 | sourcebot.additionalLabels | object | `{}` | Add extra labels to all resources |
@@ -84,7 +86,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.image.digest | string | `""` | Container image digest (used instead of tag if set) |
 | sourcebot.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | sourcebot.image.pullSecrets | list | `[]` | Configure image pull secrets for private registries |
-| sourcebot.image.repository | string | `"docker.sourcebot.dev/sourcebot-dev/sourcebot"` | Container image repository |
+| sourcebot.image.repository | string | `"ghcr.io/sourcebot-dev/sourcebot"` | Container image repository |
 | sourcebot.image.tag | string | `""` | Container image tag. Falls back to appVersion if not set. |
 | sourcebot.ingress.annotations | object | `{}` | Ingress annotations |
 | sourcebot.ingress.className | string | `""` | Ingress class name |
