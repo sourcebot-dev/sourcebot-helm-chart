@@ -113,6 +113,28 @@ Return Redis hostname
 {{- end }}
 
 {{/*
+Return the public URL Sourcebot is served on, used for AUTH_URL.
+Derived from the first ingress host, or from the first non-wildcard HTTPRoute
+hostname when ingress is disabled. Wildcard hostnames are skipped because they
+are not a usable URL. Returns an empty string when no host can be determined.
+*/}}
+{{- define "sourcebot.authUrl" -}}
+{{- if and .Values.sourcebot.ingress.enabled (gt (len .Values.sourcebot.ingress.hosts) 0) -}}
+{{- printf "https://%s" (index .Values.sourcebot.ingress.hosts 0).host -}}
+{{- else if .Values.sourcebot.httpRoute.enabled -}}
+{{- $hostnames := list -}}
+{{- range .Values.sourcebot.httpRoute.hostnames -}}
+{{- if not (hasPrefix "*" .) -}}
+{{- $hostnames = append $hostnames . -}}
+{{- end -}}
+{{- end -}}
+{{- with $hostnames -}}
+{{- printf "https://%s" (first .) -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+
+{{/*
 Helper to get value or secret reference
 Returns either a direct value or a valueFrom secretKeyRef
 */}}
