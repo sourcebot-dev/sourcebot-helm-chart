@@ -1,6 +1,16 @@
 {{- if and .Values.sourcebot.persistence.enabled (not .Values.sourcebot.persistence.existingClaim) }}
 {{- $pvcName := printf "%s-%s" (include "sourcebot.fullname" .) "data" -}}
 {{- $existingPvc := (lookup "v1" "PersistentVolumeClaim" $.Release.Namespace $pvcName) -}}
+{{- /*
+An explicit `sourcebot.persistence.size` always wins. When it is unset, an
+existing PVC keeps its current size, so changing the chart default never
+resizes a live volume on upgrade (which fails on storage classes without
+`allowVolumeExpansion`). New installs get the chart default.
+*/ -}}
+{{- $size := .Values.sourcebot.persistence.size -}}
+{{- if not $size -}}
+{{- $size = dig "spec" "resources" "requests" "storage" "100Gi" $existingPvc -}}
+{{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -21,7 +31,7 @@ spec:
     {{- end }}
   resources:
     requests:
-      storage: {{ .Values.sourcebot.persistence.size }}
+      storage: {{ $size }}
   {{- if .Values.sourcebot.persistence.storageClass }}
   {{- if (eq "-" .Values.sourcebot.persistence.storageClass) }}
   storageClassName: ""

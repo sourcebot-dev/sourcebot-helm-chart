@@ -104,7 +104,7 @@ Sourcebot is a self-hosted tool that helps you understand your codebase.
 | sourcebot.persistence.annotations | object | `{}` | Annotations for the PersistentVolumeClaim |
 | sourcebot.persistence.enabled | bool | `true` | Enable persistent storage for repository data and search indexes |
 | sourcebot.persistence.existingClaim | string | `""` | Use an existing PersistentVolumeClaim (if set, other persistence settings are ignored) |
-| sourcebot.persistence.size | string | `"10Gi"` | Size of the persistent volume |
+| sourcebot.persistence.size | string | `""` (100Gi for new installs) | Size of the persistent volume. When unset, new installs get 100Gi and existing volumes keep their current size on upgrade. See the sizing guide: https://docs.sourcebot.dev/docs/deployment/sizing-guide |
 | sourcebot.persistence.storageClass | string | `""` | Storage class name. If not set, uses the cluster default storage class |
 | sourcebot.podAnnotations | object | `{}` | Add annotations to the pod metadata |
 | sourcebot.podDisruptionBudget.enabled | bool | `true` | Enable Pod Disruption Budget |

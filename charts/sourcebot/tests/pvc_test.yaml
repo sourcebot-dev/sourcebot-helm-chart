@@ -1,0 +1,107 @@
+suite: test sourcebot data PVC sizing
+templates:
+  - pvc.yaml
+release:
+  name: sourcebot
+  namespace: sourcebot
+values:
+  - ../values.lint.yaml
+tests:
+  - it: should default new installs to 100Gi
+    asserts:
+      - equal:
+          path: spec.resources.requests.storage
+          value: 100Gi
+      - notExists:
+          path: spec.volumeName
+
+  - it: should use an explicitly set size on a new install
+    set:
+      sourcebot.persistence.size: 25Gi
+    asserts:
+      - equal:
+          path: spec.resources.requests.storage
+          value: 25Gi
+
+  - it: should keep an existing PVC's size when size is unset
+    kubernetesProvider:
+      scheme:
+        "v1/PersistentVolumeClaim":
+          gvr:
+            version: "v1"
+            resource: "persistentvolumeclaims"
+          namespaced: true
+      objects:
+        - kind: PersistentVolumeClaim
+          apiVersion: v1
+          metadata:
+            name: sourcebot-data
+            namespace: sourcebot
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 10Gi
+            volumeName: pvc-1234
+    asserts:
+      - equal:
+          path: spec.resources.requests.storage
+          value: 10Gi
+      - equal:
+          path: spec.volumeName
+          value: pvc-1234
+
+  - it: should apply an explicitly set size to an existing PVC
+    set:
+      sourcebot.persistence.size: 50Gi
+    kubernetesProvider:
+      scheme:
+        "v1/PersistentVolumeClaim":
+          gvr:
+            version: "v1"
+            resource: "persistentvolumeclaims"
+          namespaced: true
+      objects:
+        - kind: PersistentVolumeClaim
+          apiVersion: v1
+          metadata:
+            name: sourcebot-data
+            namespace: sourcebot
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 10Gi
+            volumeName: pvc-1234
+    asserts:
+      - equal:
+          path: spec.resources.requests.storage
+          value: 50Gi
+      - equal:
+          path: spec.volumeName
+          value: pvc-1234
+
+  - it: should ignore a PVC with the same name in another namespace
+    kubernetesProvider:
+      scheme:
+        "v1/PersistentVolumeClaim":
+          gvr:
+            version: "v1"
+            resource: "persistentvolumeclaims"
+          namespaced: true
+      objects:
+        - kind: PersistentVolumeClaim
+          apiVersion: v1
+          metadata:
+            name: sourcebot-data
+            namespace: other
+          spec:
+            resources:
+              requests:
+                storage: 10Gi
+    asserts:
+      - equal:
+          path: spec.resources.requests.storage
+          value: 100Gi

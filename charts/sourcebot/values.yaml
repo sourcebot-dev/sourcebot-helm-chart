@@ -319,8 +319,10 @@ sourcebot:
     enabled: true
     # -- Use an existing PersistentVolumeClaim (if set, other persistence settings are ignored)
     existingClaim: ""
-    # -- Size of the persistent volume
-    size: 10Gi
+    # -- Size of the persistent volume. When unset, new installs get 100Gi and existing volumes keep their current size on upgrade.
+    # See the sizing guide: https://docs.sourcebot.dev/docs/deployment/sizing-guide
+    # @default -- `""` (100Gi for new installs)
+    size: ""
     # -- Storage class name. If not set, uses the cluster default storage class
     storageClass: ""
     # -- Access modes for the persistent volume
