@@ -1,0 +1,92 @@
+name: Publish Dev Chart
+
+# Publishes each main commit as a uniquely versioned dev chart, then asks
+# sourcebot-infra to pin staging to it. Dev charts go to a separate GHCR path and
+# skip chart-releaser, so they don't appear in the customer-facing Helm repo.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/sourcebot/**'
+      - '.github/workflows/publish-dev-chart.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-dev-chart
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish and notify
+    # A manual run can target any ref, and this deploys to staging.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.13.2
+
+      - name: Install helm-unittest plugin
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version v1.0.0
+
+      - name: Update dependencies
+        run: helm dependency update charts/sourcebot/
+
+      - name: Run helm lint
+        run: helm lint charts/sourcebot/ -f charts/sourcebot/values.lint.yaml
+
+      - name: Run unit tests
+        run: helm unittest charts/sourcebot/
+
+      - name: Set dev version
+        id: version
+        run: |
+          BASE_VERSION=$(yq e '.version' charts/sourcebot/Chart.yaml)
+          # The `g` prefix keeps this valid SemVer: a numeric identifier can't have
+          # a leading zero, and a short SHA can be all digits.
+          VERSION="${BASE_VERSION}-main.g${GITHUB_SHA::7}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Dev chart version: $VERSION"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and push
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          helm package charts/sourcebot/ --version "$VERSION"
+          helm push "sourcebot-${VERSION}.tgz" oci://ghcr.io/sourcebot-dev/sourcebot-helm-chart/dev-charts
+
+      - name: Generate GitHub App token
+        id: generate_token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: sourcebot-dev
+          repositories: sourcebot-infra
+
+      - name: Notify sourcebot-infra
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          jq -n --arg version "$VERSION" \
+            '{event_type: "chart-main-published", client_payload: {version: $version}}' \
+            | gh api --method POST repos/sourcebot-dev/sourcebot-infra/dispatches --input -
